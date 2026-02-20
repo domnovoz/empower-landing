@@ -22,7 +22,7 @@ import "./mobile.css";
 
 const MetallicText = ({ children, className = "", as: Component = "span" }) => (
   <Component
-    className={`bg-gradient-to-r from-zinc-300 via-zinc-100 to-zinc-400 text-transparent bg-clip-text ${className}`}
+    className={`bg-gradient-to-r from-zinc-300 via-white to-zinc-400 text-transparent bg-clip-text ${className}`}
   >
     {children}
   </Component>
@@ -30,22 +30,31 @@ const MetallicText = ({ children, className = "", as: Component = "span" }) => (
 
 const FeatureBlock = ({ icon: Icon, title, description, className = "" }) => (
   <div
-    className={`flex flex-col items-start p-5 rounded-2xl border border-white/[0.07] bg-white/[0.02] shadow-[0_18px_36px_-30px_rgba(0,0,0,0.85)] backdrop-blur-[2px] hover:border-white/[0.12] hover:bg-white/[0.03] transition-all duration-300 ${className}`}
+    className={`surface-card flex h-full flex-col items-start gap-2 rounded-3xl p-5 md:p-6 ${className}`}
   >
-    <Icon className="w-5 h-5 text-zinc-400 mb-3" strokeWidth={1.5} />
-    <h3 className="text-base font-medium text-zinc-200 mb-2 tracking-wide">{title}</h3>
-    <p className="text-zinc-500 leading-relaxed text-sm font-light">{description}</p>
+    <Icon className="mb-2 h-5 w-5 text-zinc-300" strokeWidth={1.5} />
+    <h3 className="text-base font-medium tracking-tight text-zinc-100">{title}</h3>
+    <p className="text-sm leading-relaxed text-zinc-400">{description}</p>
   </div>
 );
 
-const Slide = ({ children, tone = "", align = "center" }) => (
-  <section className="relative overflow-hidden h-[calc(100vh-64px)] w-full shrink-0 px-6 md:px-12 lg:px-16 py-8">
+const Slide = ({ children, tone = "", align = "center", index, activeStep, direction }) => {
+  let stateClass = "slide-state-idle";
+  if (index === activeStep) stateClass = "slide-state-active";
+  if (direction === 1 && index === activeStep - 1) stateClass = "slide-state-exit-up";
+  if (direction === -1 && index === activeStep + 1) stateClass = "slide-state-exit-down";
+
+  return (
+    <section
+      className={`slide-shell relative h-[calc(100vh-64px)] w-full shrink-0 overflow-hidden px-4 py-6 sm:px-6 md:px-10 md:py-8 lg:px-16 ${tone} ${stateClass}`}
+    >
     <div className="pointer-events-none absolute inset-0 opacity-35 bg-[radial-gradient(circle_at_50%_8%,rgba(255,255,255,0.06)_0%,transparent_42%)]" />
-    <div className="relative h-full max-w-6xl mx-auto">
-      <div className={`h-full ${align === "center" ? "flex items-center" : ""}`}>{children}</div>
+    <div className="relative mx-auto h-full w-full max-w-6xl">
+        <div className={`slide-reveal h-full ${align === "center" ? "flex items-center" : ""}`}>{children}</div>
     </div>
-  </section>
-);
+    </section>
+  );
+};
 
 const LOADING_MESSAGE = "Loading the website";
 
@@ -55,6 +64,7 @@ export default function App() {
   const [roleplayKey, setRoleplayKey] = useState(0);
   const [focusState, setFocusState] = useState("iphone");
   const [stepIndex, setStepIndex] = useState(0);
+  const [slideDirection, setSlideDirection] = useState(1);
   const [showStepper] = useState(true);
   const [stepperPulse] = useState(false);
 
@@ -65,6 +75,7 @@ export default function App() {
   const goToStep = (target) => {
     const next = Math.max(0, Math.min(totalSteps - 1, target));
     if (next === stepIndex) return;
+    setSlideDirection(next > stepIndex ? 1 : -1);
     if (next === 1) setReplayKey((k) => k + 1);
     if (next === 2) setRoleplayKey((k) => k + 1);
     setStepIndex(next);
@@ -180,17 +191,17 @@ export default function App() {
   }
 
   return (
-    <div className="h-screen bg-[#09090b] text-zinc-400 font-sans overflow-hidden selection:bg-zinc-800 selection:text-zinc-100">
+    <div className="app-shell h-screen overflow-hidden bg-[#09090b] font-sans text-zinc-300 selection:bg-zinc-800 selection:text-zinc-100">
       <div className="fixed inset-0 z-0 pointer-events-none">
         <div className="absolute inset-0 opacity-30 bg-[radial-gradient(circle_at_50%_0%,rgba(255,255,255,0.08)_0%,transparent_48%)]" />
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(9,9,11,0.05)_0%,rgba(9,9,11,0.55)_100%)]" />
       </div>
 
       <div className="relative z-10 h-full">
-        <nav className="w-full bg-[#09090b]/78 border-b border-white/[0.08] backdrop-blur-md fixed top-0 z-50">
-          <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+        <nav className="glass-nav fixed top-0 z-50 w-full">
+          <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
             <img src={logo} alt="Promethist logo" className="h-7 w-auto object-contain" />
-            <button className="text-xs font-medium tracking-widest uppercase text-zinc-400 hover:text-zinc-100 transition-colors">
+            <button className="inline-flex h-9 items-center rounded-full border border-white/[0.14] bg-white/[0.02] px-4 text-[11px] font-medium uppercase tracking-[0.16em] text-zinc-300 transition-colors hover:border-white/[0.26] hover:text-zinc-100">
               Book a Demo
             </button>
           </div>
@@ -202,34 +213,38 @@ export default function App() {
               className="h-full transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]"
               style={{ transform: `translateY(-${stepIndex * 100}%)` }}
             >
-              <Slide tone="bg-zinc-950/25" align="center">
-                <div className="w-full px-4 md:px-10">
-                  <div className="inline-flex items-center gap-3 mb-8">
+              <Slide tone="bg-zinc-950/25" align="center" index={0} activeStep={stepIndex} direction={slideDirection}>
+                <div className="mx-auto w-full max-w-5xl px-1 sm:px-3 md:px-6">
+                  <div className="mb-6 inline-flex items-center gap-3 md:mb-8">
                     <span className="h-[1px] w-8 bg-zinc-600"></span>
-                    <span className="text-xs font-medium tracking-widest uppercase text-zinc-400">Enterprise Enablement</span>
+                    <span className="text-[11px] font-medium uppercase tracking-[0.16em] text-zinc-400">Enterprise Enablement</span>
                   </div>
-                  <h1 className="text-5xl md:text-7xl font-light tracking-tight text-zinc-100 mb-6 leading-[1.04] max-w-4xl">
+                  <h1 className="mb-5 max-w-4xl text-4xl font-light leading-[1.03] tracking-tight text-zinc-100 sm:text-5xl md:mb-6 md:text-6xl lg:text-7xl">
                     Empower your teams with <br />
                     <MetallicText className="font-medium">Relational Intelligence</MetallicText>
                   </h1>
-                  <p className="text-lg md:text-2xl text-zinc-500 font-light leading-relaxed mb-10 max-w-2xl">
+                  <p className="mb-8 max-w-2xl text-base leading-relaxed text-zinc-400 sm:text-lg md:mb-10 md:text-xl">
                     Turn training into a direct driver of revenue with dynamic AI coaching and measurable conversational performance.
                   </p>
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+                    <button className="cta-primary w-full sm:w-auto">Request a Demo</button>
+                    <button className="cta-ghost w-full sm:w-auto">Watch Product Tour</button>
+                  </div>
                 </div>
               </Slide>
 
-              <Slide tone="bg-zinc-950/20">
-                <div className="w-full px-4 md:px-8 h-full flex flex-col justify-center">
-                  <h2 className="text-3xl md:text-4xl font-light tracking-tight text-zinc-100 max-w-4xl mx-auto leading-tight mb-3 text-center">
+              <Slide tone="bg-zinc-950/20" index={1} activeStep={stepIndex} direction={slideDirection}>
+                <div className="flex h-full w-full flex-col justify-center px-1 sm:px-3">
+                  <h2 className="mx-auto mb-3 max-w-4xl text-center text-2xl font-light leading-tight tracking-tight text-zinc-100 sm:text-3xl md:text-4xl">
                     Progressive coaching at enterprise scale, powered by <br className="hidden md:block" />
                     <MetallicText>Relational Intelligence.</MetallicText>
                   </h2>
-                  <p className="text-zinc-500 text-sm md:text-base font-light tracking-wide mb-5 text-center max-w-3xl mx-auto">
+                  <p className="mx-auto mb-6 max-w-3xl text-center text-sm leading-relaxed tracking-[0.01em] text-zinc-400 md:text-base">
                     Relational Intelligence powers every coaching moment across your enterprise ecosystem, turning scattered
                     conversations into measurable behavior change, faster ramp times, and repeatable revenue execution.
                   </p>
 
-                  <div className="relative w-full flex flex-col md:flex-row items-start justify-start gap-6 mt-2">
+                  <div className="relative mt-2 flex w-full flex-col items-start justify-start gap-5 lg:flex-row lg:items-center">
                     <div className="flex-1 w-full max-w-[650px] text-left" style={terminalStyle}>
                       {shouldMountSimulation ? (
                         <TerminalApp key={replayKey} onReplay={() => setReplayKey((k) => k + 1)} />
@@ -237,7 +252,7 @@ export default function App() {
                         <div className="terminal min-h-[500px] animate-pulse bg-zinc-900/30" />
                       )}
                     </div>
-                    <div className="w-full max-w-[290px] md:-ml-14 relative z-20" style={iphoneStyle}>
+                    <div className="relative z-20 w-full max-w-[290px] self-center lg:-ml-12 lg:self-auto" style={iphoneStyle}>
                       {shouldMountSimulation ? (
                         <CoachIphone replayKey={replayKey} />
                       ) : (
@@ -248,9 +263,9 @@ export default function App() {
                 </div>
               </Slide>
 
-              <Slide tone="bg-zinc-950/30">
-                <div className="w-full px-4 md:px-8 h-full flex flex-col justify-center">
-                  <div className="max-w-6xl mx-auto grid lg:grid-cols-[300px_minmax(0,1fr)] gap-6 md:gap-8 items-center">
+              <Slide tone="bg-zinc-950/30" index={2} activeStep={stepIndex} direction={slideDirection}>
+                <div className="flex h-full w-full flex-col justify-center px-1 sm:px-3">
+                  <div className="mx-auto grid max-w-6xl items-center gap-6 md:gap-8 lg:grid-cols-[300px_minmax(0,1fr)]">
                     <div className="w-full max-w-[290px] mx-auto lg:mx-0">
                       {shouldMountRoleplay ? (
                         <RoleplayIphone key={roleplayKey} />
@@ -259,12 +274,12 @@ export default function App() {
                       )}
                     </div>
 
-                    <div>
-                      <span className="text-xs font-medium tracking-widest uppercase text-zinc-500 block mb-3">The AI Coach</span>
-                      <h3 className="text-2xl md:text-3xl font-light tracking-tight text-zinc-100 leading-tight mb-3">
+                    <div className="lg:pr-2">
+                      <span className="mb-3 block text-[11px] font-medium uppercase tracking-[0.16em] text-zinc-500">The AI Coach</span>
+                      <h3 className="mb-3 text-2xl font-light leading-tight tracking-tight text-zinc-100 md:text-3xl">
                         Master the <MetallicText>"last mile"</MetallicText> of high-stakes conversations, with observability built in.
                       </h3>
-                      <p className="text-sm md:text-base text-zinc-400 font-light leading-relaxed mb-5 max-w-2xl">
+                      <p className="mb-6 max-w-2xl text-sm leading-relaxed text-zinc-400 md:text-base">
                         Roleplay simulation, coaching signal capture, and secure performance insights in one compact workflow.
                       </p>
 
@@ -293,14 +308,14 @@ export default function App() {
                 </div>
               </Slide>
 
-              <Slide tone="bg-zinc-950/15" align="center">
-                <div className="w-full px-4 md:px-8 grid md:grid-cols-2 gap-14 items-center">
-                  <div>
-                    <span className="text-xs font-medium tracking-widest uppercase text-zinc-500 block mb-4">The Platform</span>
-                    <h2 className="text-3xl md:text-4xl font-light tracking-tight text-zinc-100 mb-5">
+              <Slide tone="bg-zinc-950/15" align="center" index={3} activeStep={stepIndex} direction={slideDirection}>
+                <div className="grid w-full items-center gap-10 px-1 sm:px-3 md:grid-cols-2 md:gap-14">
+                  <div className="md:pr-4">
+                    <span className="mb-4 block text-[11px] font-medium uppercase tracking-[0.16em] text-zinc-500">The Platform</span>
+                    <h2 className="mb-5 text-3xl font-light tracking-tight text-zinc-100 md:text-4xl">
                       Deploy new behaviors <MetallicText>overnight.</MetallicText>
                     </h2>
-                    <p className="text-zinc-400 font-light leading-relaxed mb-8">
+                    <p className="mb-8 text-zinc-400 leading-relaxed">
                       Move from manager-dependent bottlenecks to automated enablement across global teams.
                     </p>
                     <div className="space-y-5">
@@ -325,7 +340,7 @@ export default function App() {
                     </div>
                   </div>
 
-                  <div className="relative overflow-hidden rounded-2xl border border-[#1a2539] bg-[#050912] aspect-square shadow-[0_28px_64px_-40px_rgba(0,0,0,0.95)]">
+                  <div className="relative aspect-square overflow-hidden rounded-2xl border border-[#1a2539] bg-[#050912] shadow-[0_28px_64px_-40px_rgba(0,0,0,0.95)]">
                     <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_78%_4%,rgba(68,90,160,0.24),transparent_42%)]" />
                     <div className="h-full grid grid-cols-[92px_minmax(0,1fr)] relative">
                       <aside className="border-r border-[#141d2e] bg-[#070d18] p-3.5 flex flex-col">
@@ -474,79 +489,79 @@ export default function App() {
                 </div>
               </Slide>
 
-              <Slide tone="bg-zinc-950/30" align="center">
-                <div className="w-full px-4 md:px-8 text-center">
-                  <Shield className="w-10 h-10 text-zinc-500 mx-auto mb-5 stroke-[1]" />
-                  <h2 className="text-3xl md:text-4xl font-light tracking-tight text-zinc-100 mb-4">
+              <Slide tone="bg-zinc-950/30" align="center" index={4} activeStep={stepIndex} direction={slideDirection}>
+                <div className="w-full px-1 text-center sm:px-3">
+                  <Shield className="mx-auto mb-5 h-10 w-10 stroke-[1] text-zinc-500" />
+                  <h2 className="mb-4 text-3xl font-light tracking-tight text-zinc-100 md:text-4xl">
                     Enterprise Security & <MetallicText>Control</MetallicText>
                   </h2>
-                  <p className="text-zinc-400 font-light leading-relaxed mb-10 max-w-3xl mx-auto">
+                  <p className="mx-auto mb-10 max-w-3xl leading-relaxed text-zinc-400">
                     Generative flexibility with strict, auditable control for regulated environments.
                   </p>
 
-                  <div className="grid sm:grid-cols-3 gap-6 max-w-4xl mx-auto text-left">
-                    <div className="p-5 border border-white/[0.08] rounded-xl bg-white/[0.02] shadow-[0_20px_36px_-30px_rgba(0,0,0,0.85)]">
+                  <div className="mx-auto grid max-w-4xl gap-5 text-left sm:grid-cols-3">
+                    <div className="surface-card rounded-2xl p-5">
                       <Lock className="w-5 h-5 text-zinc-400 mb-3" />
                       <h4 className="text-zinc-200 font-medium mb-2">SOC2 & GDPR</h4>
-                      <p className="text-xs text-zinc-500">Enterprise-grade data protection and privacy controls.</p>
+                      <p className="text-sm leading-relaxed text-zinc-400">Enterprise-grade data protection and privacy controls.</p>
                     </div>
-                    <div className="p-5 border border-white/[0.08] rounded-xl bg-white/[0.02] shadow-[0_20px_36px_-30px_rgba(0,0,0,0.85)]">
+                    <div className="surface-card rounded-2xl p-5">
                       <CheckCircle2 className="w-5 h-5 text-zinc-400 mb-3" />
                       <h4 className="text-zinc-200 font-medium mb-2">Hallucination-Free</h4>
-                      <p className="text-xs text-zinc-500">Strict separation of generative output and factual systems.</p>
+                      <p className="text-sm leading-relaxed text-zinc-400">Strict separation of generative output and factual systems.</p>
                     </div>
-                    <div className="p-5 border border-white/[0.08] rounded-xl bg-white/[0.02] shadow-[0_20px_36px_-30px_rgba(0,0,0,0.85)]">
+                    <div className="surface-card rounded-2xl p-5">
                       <Shield className="w-5 h-5 text-zinc-400 mb-3" />
                       <h4 className="text-zinc-200 font-medium mb-2">Brand Safety</h4>
-                      <p className="text-xs text-zinc-500">AI remains anchored to approved corporate messaging.</p>
+                      <p className="text-sm leading-relaxed text-zinc-400">AI remains anchored to approved corporate messaging.</p>
                     </div>
                   </div>
                 </div>
               </Slide>
 
-              <Slide tone="bg-zinc-950/25" align="center">
-                <div className="w-full px-4 md:px-8 text-center">
-                  <h2 className="text-3xl md:text-4xl font-light tracking-tight text-zinc-100 mb-4">
+              <Slide tone="bg-zinc-950/25" align="center" index={5} activeStep={stepIndex} direction={slideDirection}>
+                <div className="w-full px-1 text-center sm:px-3">
+                  <h2 className="mb-4 text-3xl font-light tracking-tight text-zinc-100 md:text-4xl">
                     Ready to transform your <MetallicText>enterprise execution?</MetallicText>
                   </h2>
-                  <p className="text-lg text-zinc-500 font-light mb-8 max-w-2xl mx-auto">
+                  <p className="mx-auto mb-8 max-w-2xl text-base leading-relaxed text-zinc-400 md:text-lg">
                     Stop testing memory and start driving measurable outcomes: faster ramp, higher message consistency, and stronger conversion behavior.
                   </p>
 
-                  <div className="grid md:grid-cols-3 gap-7 max-w-4xl mx-auto mb-10 text-left">
-                    <div>
-                      <div className="text-3xl font-light text-zinc-200 mb-2">Ramp</div>
-                      <div className="text-sm font-medium tracking-widest uppercase text-zinc-600 mb-2">Time to Value</div>
-                      <p className="text-sm text-zinc-500 font-light">Accelerate onboarding and reach productivity sooner.</p>
+                  <div className="mx-auto mb-10 grid max-w-4xl gap-5 text-left md:grid-cols-3">
+                    <div className="metric-card">
+                      <div className="mb-2 text-3xl font-light text-zinc-100">Ramp</div>
+                      <div className="mb-2 text-[11px] font-medium uppercase tracking-[0.16em] text-zinc-500">Time to Value</div>
+                      <p className="text-sm leading-relaxed text-zinc-400">Accelerate onboarding and reach productivity sooner.</p>
                     </div>
-                    <div>
-                      <div className="text-3xl font-light text-zinc-200 mb-2">Consistency</div>
-                      <div className="text-sm font-medium tracking-widest uppercase text-zinc-600 mb-2">Message Adherence</div>
-                      <p className="text-sm text-zinc-500 font-light">Reduce execution drift and dependency on hero reps.</p>
+                    <div className="metric-card">
+                      <div className="mb-2 text-3xl font-light text-zinc-100">Consistency</div>
+                      <div className="mb-2 text-[11px] font-medium uppercase tracking-[0.16em] text-zinc-500">Message Adherence</div>
+                      <p className="text-sm leading-relaxed text-zinc-400">Reduce execution drift and dependency on hero reps.</p>
                     </div>
-                    <div>
-                      <div className="text-3xl font-light text-zinc-200 mb-2">Conversion</div>
-                      <div className="text-sm font-medium tracking-widest uppercase text-zinc-600 mb-2">Revenue Driving</div>
-                      <p className="text-sm text-zinc-500 font-light">Turn training into measurable behavior change.</p>
+                    <div className="metric-card">
+                      <div className="mb-2 text-3xl font-light text-zinc-100">Conversion</div>
+                      <div className="mb-2 text-[11px] font-medium uppercase tracking-[0.16em] text-zinc-500">Revenue Driving</div>
+                      <p className="text-sm leading-relaxed text-zinc-400">Turn training into measurable behavior change.</p>
                     </div>
                   </div>
 
                   <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                    <button className="w-full sm:w-auto px-8 py-4 rounded-full bg-zinc-100 text-zinc-950 font-medium transition-transform hover:scale-[1.02] hover:bg-white">
+                    <button className="cta-primary w-full sm:w-auto">
                       Request a Demo
                     </button>
-                    <button className="w-full sm:w-auto px-8 py-4 rounded-full border border-white/[0.14] bg-white/[0.03] text-zinc-200 font-medium hover:border-white/[0.22] hover:bg-white/[0.06] transition-colors">
+                    <button className="cta-ghost w-full sm:w-auto">
                       Contact Sales
                     </button>
                   </div>
 
-                  <div className="max-w-4xl mx-auto pt-8 mt-9 border-t border-white/[0.07]">
-                    <p className="text-xs tracking-widest text-zinc-600 uppercase mb-7">A proven partner for long-term growth</p>
-                    <div className="flex flex-wrap justify-center items-center gap-10 md:gap-16 opacity-40 hover:opacity-70 transition-opacity">
-                      <span className="text-xl font-bold tracking-tight">T-Mobile</span>
-                      <span className="text-xl font-bold tracking-tight">Erste Group</span>
-                      <span className="text-xl font-bold tracking-tight">Kyndryl</span>
-                      <span className="text-xl font-bold tracking-tight">Adastra</span>
+                  <div className="mx-auto mt-9 max-w-4xl border-t border-white/[0.07] pt-8">
+                    <p className="mb-7 text-[11px] uppercase tracking-[0.16em] text-zinc-600">A proven partner for long-term growth</p>
+                    <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-3 opacity-45 transition-opacity hover:opacity-70 md:gap-x-16">
+                      <span className="text-lg font-semibold tracking-tight text-zinc-300">T-Mobile</span>
+                      <span className="text-lg font-semibold tracking-tight text-zinc-300">Erste Group</span>
+                      <span className="text-lg font-semibold tracking-tight text-zinc-300">Kyndryl</span>
+                      <span className="text-lg font-semibold tracking-tight text-zinc-300">Adastra</span>
                     </div>
                   </div>
                 </div>
@@ -557,7 +572,7 @@ export default function App() {
 
         {showStepper && (
           <div
-            className={`fixed bottom-6 right-6 z-[9999] flex items-center gap-2 rounded-full border border-white/[0.14] bg-[#0f0f12]/86 backdrop-blur-md p-1.5 shadow-2xl ${
+            className={`floating-stepper fixed bottom-5 left-1/2 z-[9999] flex -translate-x-1/2 items-center gap-2 rounded-full border border-white/[0.14] bg-[#0f0f12]/86 p-1.5 shadow-2xl backdrop-blur-md md:bottom-6 md:left-auto md:right-6 md:translate-x-0 ${
               stepperPulse ? "animate-pulse" : ""
             }`}
           >
