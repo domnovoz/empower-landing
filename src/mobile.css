@@ -1,0 +1,1064 @@
+:root {
+  --bg-color: #000000;
+  --app-bg: #000000;
+  --text-primary: #ffffff;
+  --text-secondary: #888888;
+  --accent-color: #4ade80;
+  --user-color: #3b82f6;
+  --device-width: 290px;
+  --device-height: 620px;
+  --border-radius: 50px;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.iphone-frame {
+  width: var(--device-width);
+  height: var(--device-height);
+  background-color: var(--app-bg);
+  border-radius: var(--border-radius);
+  position: relative;
+  box-shadow:
+    0 1px 0 0 rgba(255, 255, 255, 0.08) inset,
+    0 0 0 6px #1a1a1a,
+    0 0 0 7px #2a2a2a,
+    0 30px 80px rgba(0, 0, 0, 0.7),
+    0 0 60px rgba(201, 120, 94, 0.1);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  max-height: 95vh;
+  max-width: 100vw;
+}
+
+/* iPhone 16 Dynamic Island */
+.dynamic-island {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 30px;
+  background-color: #000;
+  border-radius: 15px;
+  z-index: 1000;
+  box-shadow: inset 0 0 4px rgba(255, 255, 255, 0.1);
+}
+
+.iphone-frame::before {
+  content: "";
+  position: absolute;
+  top: -40%;
+  left: 50%;
+  width: 200px;
+  height: 140px;
+  background: radial-gradient(ellipse at center,
+      rgba(255, 248, 238, 0.15) 0%,
+      rgba(255, 255, 255, 0.04) 40%,
+      transparent 70%);
+  z-index: 15;
+  pointer-events: none;
+  animation: iphoneLightDrift 8s ease-in-out infinite;
+  filter: blur(30px);
+}
+
+.iphone-frame::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 140px;
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent,
+    rgba(255, 255, 255, 0.15),
+    transparent);
+  z-index: 999;
+  pointer-events: none;
+  animation: iphoneLightDrift 8s ease-in-out infinite;
+}
+
+/* Base Orb Container - No black circle, just the host for WebGL */
+.agent-silhouette {
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(1.1) !important;
+  width: 280px;
+  height: 280px;
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 1.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+  filter: none !important;
+  opacity: 1;
+}
+
+/* Ambient Conversation Overlay */
+.ambient-conversation-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  z-index: 50;
+  pointer-events: none;
+  opacity: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 0 18px 64px 18px;
+
+  /* Keep the conversation anchored below the orb entirely */
+  top: auto;
+  bottom: 0;
+  height: 58%;
+  /* Only take up the bottom half of the phone */
+
+  /* Fade transcript quickly as it reaches the top of its own container (below the core orb) */
+  -webkit-mask-image: linear-gradient(to bottom,
+      transparent 0%,
+      transparent 32%,
+      black 58%,
+      black 100%);
+  mask-image: linear-gradient(to bottom,
+      transparent 0%,
+      transparent 32%,
+      black 58%,
+      black 100%);
+}
+
+.ambient-transcript {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  z-index: 60;
+  /* Removed restrictive height and buggy gradient masks. JS exclusively controls the 2 visible nodes limit. */
+}
+
+.ambient-line {
+  width: 100%;
+  opacity: 0;
+  /* JS handles fade in */
+  display: block;
+  margin-bottom: 8px;
+  flex-shrink: 0;
+  /* Don't squash lines */
+  transition:
+    color 0.5s ease,
+    opacity 0.5s ease,
+    filter 0.5s ease,
+    text-shadow 0.5s ease;
+}
+
+.ambient-label {
+  display: block;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0.45;
+  margin-bottom: 3px;
+  font-family: var(--sans);
+}
+
+.ambient-label.user {
+  color: #9ca3af;
+}
+
+.ambient-label.agent {
+  color: #c9785e;
+}
+
+.ambient-line.user.active {
+  color: #ffffff;
+  /* Pure white for active user */
+  font-size: 16px;
+  font-weight: 400;
+  /* Lighter weight for premium feel */
+  line-height: 1.42;
+  text-align: right;
+  letter-spacing: -0.005em;
+  /* Tighter letter spacing looks more refined */
+}
+
+.ambient-line.agent.active {
+  font-size: 16px;
+  font-weight: 500;
+  /* slightly bolder to carry the gradient */
+  line-height: 1.42;
+  text-align: left;
+  letter-spacing: -0.005em;
+  filter: drop-shadow(0 2px 12px rgba(168, 192, 255, 0.25));
+  /* Soft bluish ambient glow */
+}
+
+.ambient-line.agent.active span span {
+  /* Apply gradient to the actual text node spans, not the block parent */
+  /* background-attachment: fixed doesn't work well on mobile, so using a solid premium blue color for now until we rework the animation to support clip-text */
+  color: #a8c0ff;
+  /* fallback premium color */
+  background: linear-gradient(135deg, #a8c0ff 0%, #9cb3ff 60%, #ffb6a3 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.ambient-line.historical {
+  color: rgba(160, 160, 160, 0.4);
+  /* Uniform soft gray for both */
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: -0.004em;
+  text-shadow: none;
+  background: none;
+  -webkit-text-fill-color: initial;
+  filter: none;
+}
+
+.ambient-line.user.historical {
+  text-align: right;
+}
+
+.ambient-line.agent.historical {
+  text-align: left;
+}
+
+/* Orb States - Calmed Down Significantly */
+
+/* Listening: Small, very gentle pulse */
+@keyframes orb-pulse-listen {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.05));
+  }
+
+  50% {
+    transform: translate(-50%, -50%) scale(1.03);
+    filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.08));
+  }
+
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.05));
+  }
+}
+
+.agent-silhouette.listening {
+  animation: orb-pulse-listen 6s infinite ease-in-out;
+}
+
+/* Thinking: Slight bump in size and speed */
+@keyframes orb-pulse-think {
+  0% {
+    transform: translate(-50%, -50%) scale(1.05);
+    filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.08));
+  }
+
+  50% {
+    transform: translate(-50%, -50%) scale(1.08);
+    filter: drop-shadow(0 0 18px rgba(255, 255, 255, 0.1));
+  }
+
+  100% {
+    transform: translate(-50%, -50%) scale(1.05);
+    filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.08));
+  }
+}
+
+.agent-silhouette.thinking {
+  animation: orb-pulse-think 4s infinite ease-in-out;
+}
+
+/* Speaking: Slightly more vibrant, but no massive scaling */
+@keyframes orb-pulse-speak {
+  0% {
+    transform: translate(-50%, -50%) scale(1.1);
+    filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.15));
+  }
+
+  50% {
+    transform: translate(-50%, -50%) scale(1.15);
+    filter: drop-shadow(0 0 25px rgba(255, 255, 255, 0.2));
+  }
+
+  100% {
+    transform: translate(-50%, -50%) scale(1.1);
+    filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.15));
+  }
+}
+
+.agent-silhouette.speaking {
+  animation: orb-pulse-speak 3s infinite ease-in-out;
+}
+
+/* -------------------------------------------------------------------------- */
+/* ROLEPLAY POPUP DRAWER */
+/* -------------------------------------------------------------------------- */
+.roleplay-popup {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 38%;
+  background:
+    radial-gradient(120% 80% at 50% 0%, rgba(132, 211, 255, 0.18) 0%, rgba(132, 211, 255, 0) 58%),
+    linear-gradient(180deg, rgba(16, 19, 24, 0.96) 0%, rgba(7, 9, 12, 0.98) 100%);
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 34px 34px 0 0;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 14px 22px 34px 22px;
+  overflow: hidden;
+
+  /* Configured for GSAP entrance */
+  transform: translateY(100%);
+  opacity: 0;
+}
+
+#roleplayPopup,
+.popup-avatar {
+  height: 60%;
+  /* Taller to accommodate the agent video */
+}
+
+/* Add a subtle inner shadow for a 3D glass rim */
+.roleplay-popup::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 34px 34px 0 0;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    inset 0 -28px 36px rgba(0, 0, 0, 0.35);
+  pointer-events: none;
+  z-index: 10;
+}
+
+.popup-handle {
+  width: 56px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.45);
+  border-radius: 10px;
+  margin-bottom: 22px;
+  position: relative;
+  z-index: 10;
+}
+
+.popup-graph {
+  width: 100%;
+  height: 60px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  position: relative;
+  z-index: 10;
+  padding: 0 26px;
+}
+
+.graph-bar {
+  flex: 1;
+  background: linear-gradient(180deg, rgba(151, 227, 255, 0.7) 0%, rgba(83, 145, 207, 0.32) 100%);
+  border-radius: 6px 6px 0 0;
+  box-shadow: 0 6px 14px rgba(64, 147, 233, 0.2);
+  transition: filter 0.3s ease;
+}
+
+.graph-bar:nth-child(2n) {
+  background: linear-gradient(180deg, rgba(167, 238, 195, 0.8) 0%, rgba(90, 188, 145, 0.3) 100%);
+}
+
+.graph-bar:nth-child(3n) {
+  background: linear-gradient(180deg, rgba(255, 223, 159, 0.85) 0%, rgba(196, 145, 54, 0.34) 100%);
+}
+
+.graph-bar:hover {
+  filter: brightness(1.12);
+}
+
+.popup-avatar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 0;
+  margin: 0;
+  display: block;
+  background: #000;
+  z-index: 0;
+}
+
+.popup-avatar::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 60%;
+  background: linear-gradient(to bottom,
+      transparent 0%,
+      rgba(10, 10, 12, 0.8) 60%,
+      rgba(10, 10, 12, 1) 100%);
+  pointer-events: none;
+}
+
+.popup-content {
+  text-align: center;
+  margin-top: auto;
+  margin-bottom: 18px;
+  position: relative;
+  z-index: 10;
+  width: 100%;
+}
+
+.popup-title {
+  color: #ffffff;
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin-bottom: 12px;
+}
+
+.popup-subtitle {
+  color: #a1a1aa;
+  font-size: 16px;
+  line-height: 1.4;
+  font-weight: 400;
+  padding: 0 14px;
+}
+
+.popup-cta {
+  width: 100%;
+  height: 56px;
+  border-radius: 28px;
+  background: linear-gradient(135deg, #4dc1ff 0%, #4cc3aa 100%);
+  border: none;
+  color: white;
+  font-size: 17px;
+  font-weight: 600;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  box-shadow: 0 10px 24px rgba(64, 178, 183, 0.38);
+  transition:
+    transform 0.2s ease,
+    filter 0.2s ease;
+  position: relative;
+  z-index: 10;
+}
+
+.popup-cta:active {
+  transform: scale(0.96);
+  filter: brightness(1.2);
+}
+
+/* -------------------------------------------------------------------------- */
+/* FULLSCREEN ROLEPLAY OVERLAY */
+/* -------------------------------------------------------------------------- */
+
+/* Orb background push transition */
+.agent-silhouette.blurred-bg {
+  filter: blur(8px) brightness(0.8) saturate(1.2) !important;
+  transform: translate(-50%, -50%) scale(1.1) !important;
+  transition:
+    filter 2s ease,
+    transform 2s ease,
+    opacity 2s ease !important;
+}
+
+.roleplay-fullscreen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  pointer-events: none;
+  opacity: 0;
+  background: transparent;
+}
+
+.fullscreen-video-container {
+  position: absolute;
+  top: 15%;
+  left: 0;
+  width: 100%;
+  height: 60%;
+  z-index: 0;
+  overflow: hidden;
+  /* Only fade out the very bottom, keeping the body clear */
+  mask-image: linear-gradient(to bottom, black 0%, black 85%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom,
+      black 0%,
+      black 85%,
+      transparent 100%);
+}
+
+.fullscreen-gradient {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 30%;
+  background: linear-gradient(to top,
+      rgba(0, 0, 0, 1) 0%,
+      rgba(0, 0, 0, 0.8) 50%,
+      transparent 100%);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.fullscreen-topbar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 60px 24px 20px 24px;
+  /* Account for notch */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 10;
+}
+
+.icon-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition:
+    transform 0.2s,
+    background 0.2s;
+}
+
+.icon-btn:active {
+  transform: scale(0.9);
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.online-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(0, 0, 0, 0.4);
+  padding: 8px 16px;
+  border-radius: 20px;
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.online-indicator .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 4px;
+  background: #ff3b30;
+  animation: flash-record 2s infinite ease-in-out;
+}
+
+.online-indicator span {
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+@keyframes flash-record {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.3;
+  }
+}
+
+.roleplay-controls {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 22px 20px 34px 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+  z-index: 10;
+}
+
+.control-main-btn {
+  width: 64px;
+  height: 64px;
+  border-radius: 32px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  color: white;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  transition:
+    transform 0.2s,
+    filter 0.2s;
+}
+
+.control-main-btn:active {
+  transform: scale(0.92);
+}
+
+.end-call-btn {
+  background: #ff3b30;
+  box-shadow: 0 8px 24px rgba(255, 59, 48, 0.38);
+}
+
+.mic-btn {
+  background: rgba(9, 22, 34, 0.72);
+}
+
+.mic-btn.active {
+  background: linear-gradient(135deg, rgba(129, 214, 255, 0.95), rgba(146, 244, 206, 0.9));
+  color: #041019;
+  box-shadow: 0 8px 24px rgba(94, 212, 209, 0.36);
+}
+
+/* -------------------------------------------------------------------------- */
+/* START SCREEN & ROLEPLAY FLOW */
+/* -------------------------------------------------------------------------- */
+
+.start-screen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 300;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  background: #000;
+  transition: opacity 0.5s ease;
+}
+
+.start-btn {
+  width: 200px;
+  height: 60px;
+  border-radius: 30px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  font-size: 18px;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background 0.2s,
+    transform 0.2s;
+  backdrop-filter: blur(10px);
+}
+
+.start-btn:active {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(0.95);
+}
+
+.roleplay-video-screen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 90;
+  background: transparent;
+  opacity: 0;
+  transition: opacity 1s ease;
+}
+
+.results-cta {
+  background: linear-gradient(135deg, rgba(89, 192, 255, 0.35), rgba(73, 204, 166, 0.35));
+  border: 1px solid rgba(168, 238, 255, 0.45);
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.results-cta.clicked-state {
+  background: linear-gradient(135deg, rgba(89, 192, 255, 0.55), rgba(73, 204, 166, 0.58));
+  transform: scale(0.96);
+}
+
+.roleplay-end-status {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 150;
+  text-align: center;
+  width: 80%;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.roleplay-end-status h3 {
+  color: #ffffff;
+  font-size: 21px;
+  font-weight: 500;
+  line-height: 1.35;
+  text-shadow: 0 4px 18px rgba(0, 0, 0, 0.62);
+  background: rgba(3, 8, 14, 0.78);
+  border: 1px solid rgba(165, 232, 255, 0.25);
+  padding: 14px 20px;
+  border-radius: 18px;
+  backdrop-filter: blur(12px);
+  margin: 0;
+}
+
+/* -------------------------------------------------------------------------- */
+/* EVALUATION INSIGHTS SCREEN */
+/* -------------------------------------------------------------------------- */
+.evaluation-insights-screen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 400;
+  background: #050505;
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.insights-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 60px 24px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.insights-header h2 {
+  color: white;
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.insights-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px;
+  padding-bottom: 60px;
+}
+
+.insights-section {
+  margin-bottom: 32px;
+}
+
+.section-title {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 12px;
+  letter-spacing: 1px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.section-subtitle {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+
+.insight-card {
+  background: #0f0f0f;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 16px;
+}
+
+.insight-card.engagement-card {
+  border-left: 2px solid #22c55e;
+}
+
+.insight-card.knowledge-card {
+  border-left: 2px solid #a855f7;
+}
+
+.insight-card.feedback-card {
+  border-left: 2px solid #eab308;
+  background:
+    linear-gradient(to right, rgba(234, 179, 8, 0.05), transparent 50%), #0f0f0f;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.card-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: white;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.trend-value {
+  color: #22c55e;
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.trend-chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  height: 60px;
+  margin-bottom: 16px;
+}
+
+.trend-chart .bar {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+.bar.bar-1 {
+  height: 20%;
+}
+
+.bar.bar-2 {
+  height: 35%;
+}
+
+.bar.bar-3 {
+  height: 30%;
+}
+
+.bar.bar-4 {
+  height: 50%;
+}
+
+.bar.bar-5 {
+  height: 80%;
+  background: #22c55e;
+  box-shadow: 0 0 10px rgba(34, 197, 94, 0.4);
+}
+
+.chips-container {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.chip {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 6px 12px;
+  border-radius: 16px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.card-description {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+  margin: 16px 0;
+}
+
+.feedback-quote {
+  color: rgba(255, 255, 255, 0.7);
+  font-style: italic;
+  font-size: 14px;
+  line-height: 1.5;
+  margin-bottom: 16px;
+}
+
+.section-header-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.history-item {
+  margin-bottom: 16px;
+}
+
+.history-item.today {
+  border-left: 2px solid #3b82f6;
+  padding-left: 12px;
+  margin-left: -14px;
+}
+
+.history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.history-date {
+  color: white;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.badge {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+}
+
+.live-badge {
+  background: rgba(59, 130, 246, 0.2);
+  color: #9cb3ff;
+}
+
+.passed-badge {
+  background: rgba(34, 197, 94, 0.1);
+  color: #22c55e;
+  margin-top: 8px;
+}
+
+.history-card {
+  background: #0f0f0f;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.history-card-left h4 {
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 500;
+  font-size: 15px;
+  margin-bottom: 4px;
+}
+
+.score-fraction {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 13px;
+}
+
+.score-circle {
+  position: relative;
+  width: 48px;
+  height: 48px;
+}
+
+.score-circle svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+  /* Start progress from top */
+}
+
+.circle-bg {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.1);
+  stroke-width: 3;
+}
+
+.circle-progress {
+  fill: none;
+  stroke: #22c55e;
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.score-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.history-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+}
+
+.history-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.history-meta {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 13px;
+}
+
+.history-grade {
+  color: white;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Premium animated light drift for iPhone frame */
+@keyframes iphoneLightDrift {
+  0%, 100% {
+    transform: translateX(-50%) translateY(-20px);
+    opacity: 0.6;
+  }
+  50% {
+    transform: translateX(-50%) translateY(20px);
+    opacity: 0.9;
+  }
+}
