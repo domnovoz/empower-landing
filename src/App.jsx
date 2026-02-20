@@ -47,21 +47,20 @@ const Slide = ({ children, tone = "", align = "center" }) => (
   </section>
 );
 
-const LOADING_MESSAGE = "Preparing your experience";
+const LOADING_MESSAGE = "Loading the website";
 
 export default function App() {
   const [isBootLoading, setIsBootLoading] = useState(true);
-  const [loadingProgress, setLoadingProgress] = useState(9);
   const [replayKey, setReplayKey] = useState(0);
   const [roleplayKey, setRoleplayKey] = useState(0);
   const [focusState, setFocusState] = useState("iphone");
   const [stepIndex, setStepIndex] = useState(0);
-  const [showStepper, setShowStepper] = useState(false);
-  const [stepperPulse, setStepperPulse] = useState(false);
+  const [showStepper] = useState(true);
+  const [stepperPulse] = useState(false);
 
-  const totalSteps = 7;
-  const shouldMountSimulation = Math.abs(stepIndex - 1) <= 1;
-  const shouldMountRoleplay = Math.abs(stepIndex - 2) <= 1;
+  const totalSteps = 6;
+  const shouldMountSimulation = stepIndex === 1;
+  const shouldMountRoleplay = stepIndex === 2;
 
   const goToStep = (target) => {
     const next = Math.max(0, Math.min(totalSteps - 1, target));
@@ -69,13 +68,6 @@ export default function App() {
     if (next === 1) setReplayKey((k) => k + 1);
     if (next === 2) setRoleplayKey((k) => k + 1);
     setStepIndex(next);
-  };
-
-  const startGuidedFlow = () => {
-    setShowStepper(true);
-    setStepperPulse(true);
-    goToStep(1);
-    window.setTimeout(() => setStepperPulse(false), 2200);
   };
 
   const iphoneStyle =
@@ -129,7 +121,6 @@ export default function App() {
 
   React.useEffect(() => {
     let isCancelled = false;
-    let progressInterval;
 
     const preloadVideo = (src) =>
       new Promise((resolve) => {
@@ -152,56 +143,37 @@ export default function App() {
         video.load();
       });
 
-    progressInterval = window.setInterval(() => {
-      setLoadingProgress((value) => Math.min(value + Math.random() * 2.6, 84));
-    }, 240);
-
     const preloadScript = fetch("/shader-orb.js", { cache: "force-cache" }).catch(() => null);
     const preloadAssets = Promise.allSettled([
       preloadVideo("/Packages_Empower_Loop_small.webm"),
       preloadVideo("/Packages_Engage_Loop_small.webm"),
       preloadScript,
-      new Promise((resolve) => window.setTimeout(resolve, 1100)),
+      new Promise((resolve) => window.setTimeout(resolve, 900)),
     ]);
 
     preloadAssets.then(() => {
       if (isCancelled) return;
-      clearInterval(progressInterval);
-      setLoadingProgress(100);
       window.setTimeout(() => {
         if (!isCancelled) setIsBootLoading(false);
-      }, 420);
+      }, 220);
     });
 
     return () => {
       isCancelled = true;
-      clearInterval(progressInterval);
     };
   }, []);
 
   if (isBootLoading) {
     return (
       <div className="h-screen bg-[#09090b] text-zinc-300 font-sans flex items-center justify-center px-5">
-        <div className="w-full max-w-[480px] rounded-2xl border border-white/[0.08] bg-[#0f1014]/90 backdrop-blur-sm p-7 md:p-8 shadow-[0_28px_70px_-48px_rgba(0,0,0,0.95)]">
-          <div className="flex items-center gap-3 mb-6">
-            <img src={logo} alt="Promethist logo" className="h-7 w-auto object-contain opacity-90" />
-            <div>
-              <p className="text-[11px] tracking-[0.2em] uppercase text-zinc-500">PromethistAI</p>
-              <p className="text-sm text-zinc-300">Relational Intelligence</p>
-            </div>
-          </div>
-
-          <p className="text-sm text-zinc-400 mb-5">{LOADING_MESSAGE}</p>
-
-          <div className="h-1.5 w-full rounded-full bg-white/[0.07] overflow-hidden">
-            <div
-              className="h-full rounded-full bg-[linear-gradient(90deg,rgba(143,215,212,0.7),rgba(255,255,255,0.9))] transition-[width] duration-500 ease-out"
-              style={{ width: `${loadingProgress}%` }}
-            />
-          </div>
-          <p className="mt-3 text-[11px] tracking-[0.16em] uppercase text-zinc-600">
-            Loading
+        <div className="w-full max-w-[360px] flex flex-col items-center">
+          <img src={logo} alt="Promethist logo" className="h-8 w-auto object-contain opacity-90 mb-7" />
+          <p className="text-[12px] tracking-[0.18em] uppercase text-zinc-500 mb-3">
+            {LOADING_MESSAGE}
           </p>
+          <div className="h-[2px] w-full rounded-full bg-white/[0.08] overflow-hidden">
+            <div className="h-full w-full bg-[linear-gradient(90deg,rgba(255,255,255,0.22),rgba(255,255,255,0.7),rgba(255,255,255,0.22))] animate-pulse" />
+          </div>
         </div>
       </div>
     );
@@ -243,13 +215,6 @@ export default function App() {
                   <p className="text-lg md:text-2xl text-zinc-500 font-light leading-relaxed mb-10 max-w-2xl">
                     Turn training into a direct driver of revenue with dynamic AI coaching and measurable conversational performance.
                   </p>
-                  <button
-                    className="group inline-flex items-center gap-3 px-6 py-3 rounded-full bg-zinc-100 text-zinc-950 text-sm font-medium transition-transform hover:scale-[1.02]"
-                    onClick={startGuidedFlow}
-                  >
-                    Next Section
-                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                  </button>
                 </div>
               </Slide>
 
@@ -259,8 +224,9 @@ export default function App() {
                     Progressive coaching at enterprise scale, powered by <br className="hidden md:block" />
                     <MetallicText>Relational Intelligence.</MetallicText>
                   </h2>
-                  <p className="text-zinc-500 text-sm md:text-base font-light tracking-wide mb-5 text-center">
-                    Asynchronous real-time agent steering
+                  <p className="text-zinc-500 text-sm md:text-base font-light tracking-wide mb-5 text-center max-w-3xl mx-auto">
+                    Relational Intelligence powers every coaching moment across your enterprise ecosystem, turning scattered
+                    conversations into measurable behavior change, faster ramp times, and repeatable revenue execution.
                   </p>
 
                   <div className="relative w-full flex flex-col md:flex-row items-start justify-start gap-6 mt-2">
@@ -284,64 +250,43 @@ export default function App() {
 
               <Slide tone="bg-zinc-950/30">
                 <div className="w-full px-4 md:px-8 h-full flex flex-col justify-center">
-                  <div className="text-center mb-6">
-                    <h2 className="text-3xl md:text-4xl font-light tracking-tight text-zinc-100 max-w-4xl mx-auto leading-tight mb-3">
-                      Every interaction evaluated for individual growth and organizational observability—
-                      <MetallicText>secure by design.</MetallicText>
-                    </h2>
-                    <p className="text-zinc-500 text-sm md:text-base font-light">
-                      Roleplay simulation, coaching signal capture, and performance insights in one flow.
-                    </p>
-                  </div>
+                  <div className="max-w-6xl mx-auto grid lg:grid-cols-[300px_minmax(0,1fr)] gap-6 md:gap-8 items-center">
+                    <div className="w-full max-w-[290px] mx-auto lg:mx-0">
+                      {shouldMountRoleplay ? (
+                        <RoleplayIphone key={roleplayKey} />
+                      ) : (
+                        <div className="iphone-frame" style={{ transform: "scale(0.94)", transformOrigin: "top center" }} />
+                      )}
+                    </div>
 
-                  <div className="relative overflow-hidden rounded-[30px] border border-white/[0.08] bg-[linear-gradient(140deg,rgba(255,255,255,0.06),rgba(255,255,255,0.015)_48%,rgba(6,9,12,0.88))] p-5 md:p-8">
-                    <div className="pointer-events-none absolute -top-24 left-1/2 h-64 w-64 -translate-x-1/2 rounded-full bg-cyan-300/10 blur-3xl" />
-                    <div className="grid lg:grid-cols-[minmax(0,340px)_minmax(0,1fr)] gap-8 md:gap-10 items-start relative">
-                      <div>
-                        <span className="text-[11px] font-medium tracking-[0.2em] uppercase text-zinc-500 block mb-3">The AI Coach</span>
-                        <h3 className="text-2xl md:text-[2rem] font-light tracking-tight text-zinc-100 leading-tight">
-                          Make the <MetallicText>"last mile"</MetallicText> of high-stakes dialogue measurable.
-                        </h3>
-                        <p className="mt-4 text-sm leading-relaxed text-zinc-400">
-                          A live simulation surface with instant post-session feedback designed for behavior change, not vanity metrics.
-                        </p>
+                    <div>
+                      <span className="text-xs font-medium tracking-widest uppercase text-zinc-500 block mb-3">The AI Coach</span>
+                      <h3 className="text-2xl md:text-3xl font-light tracking-tight text-zinc-100 leading-tight mb-3">
+                        Master the <MetallicText>"last mile"</MetallicText> of high-stakes conversations, with observability built in.
+                      </h3>
+                      <p className="text-sm md:text-base text-zinc-400 font-light leading-relaxed mb-5 max-w-2xl">
+                        Roleplay simulation, coaching signal capture, and secure performance insights in one compact workflow.
+                      </p>
 
-                        <div className="mt-6 rounded-[26px] border border-white/[0.08] bg-black/40 backdrop-blur-sm p-3 w-full max-w-[320px]">
-                          <div className="rounded-[20px] border border-white/[0.07] bg-zinc-950/70 p-3 flex justify-center">
-                            {shouldMountRoleplay ? (
-                              <RoleplayIphone key={roleplayKey} />
-                            ) : (
-                              <div className="iphone-frame" style={{ transform: "scale(1)", transformOrigin: "top center" }} />
-                            )}
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="grid md:grid-cols-2 gap-4">
+                      <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-4">
                         <FeatureBlock
                           icon={Target}
-                          title="Adaptive Scenarios"
-                          description="Prompt variations and objections evolve in real time based on agent choices."
+                          title="Dynamic Role-Play"
+                          description="The AI generates scenario variations and pushes back in real time."
                           className="h-full"
                         />
                         <FeatureBlock
                           icon={Zap}
-                          title="Reps Without Risk"
-                          description="Stress-test messaging in simulation before customer-facing conversations."
+                          title="Safe Simulation"
+                          description="Teams can fail safely in practice before live customer conversations."
                           className="h-full"
                         />
                         <FeatureBlock
                           icon={BarChart3}
-                          title="Precision Feedback"
-                          description="Immediately score pacing, confidence, and adherence to strategic narrative."
-                          className="h-full"
+                          title="Instant Correction"
+                          description="Objective feedback on pacing, confidence, and message adherence."
+                          className="h-full sm:col-span-2 xl:col-span-1"
                         />
-                        <div className="h-full rounded-2xl border border-emerald-200/20 bg-emerald-100/[0.06] p-5 shadow-[0_20px_45px_-35px_rgba(16,185,129,0.65)]">
-                          <p className="text-[11px] font-semibold tracking-[0.18em] uppercase text-emerald-200/80 mb-2">Outcome</p>
-                          <p className="text-zinc-200 text-sm leading-relaxed">
-                            Fewer inconsistent calls and faster onboarding ramps, with one repeatable coaching loop.
-                          </p>
-                        </div>
                       </div>
                     </div>
                   </div>
@@ -380,14 +325,151 @@ export default function App() {
                     </div>
                   </div>
 
-                  <div className="relative rounded-2xl border border-white/[0.08] bg-[#0c0c0f] p-8 aspect-square flex flex-col justify-center gap-4 shadow-[0_24px_56px_-38px_rgba(0,0,0,0.9)]">
-                    <div className="h-8 w-1/3 bg-white/[0.08] rounded-md mb-4"></div>
-                    <div className="flex gap-4 mb-4">
-                      <div className="h-24 flex-1 bg-white/[0.035] rounded-lg border border-white/[0.08]"></div>
-                      <div className="h-24 flex-1 bg-white/[0.035] rounded-lg border border-white/[0.08]"></div>
-                      <div className="h-24 flex-1 bg-white/[0.035] rounded-lg border border-white/[0.08]"></div>
+                  <div className="relative overflow-hidden rounded-2xl border border-[#1a2539] bg-[#050912] aspect-square shadow-[0_28px_64px_-40px_rgba(0,0,0,0.95)]">
+                    <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_78%_4%,rgba(68,90,160,0.24),transparent_42%)]" />
+                    <div className="h-full grid grid-cols-[92px_minmax(0,1fr)] relative">
+                      <aside className="border-r border-[#141d2e] bg-[#070d18] p-3.5 flex flex-col">
+                        <div className="flex items-center gap-2 mb-6">
+                          <img src={logo} alt="Promethist" className="h-4 w-auto opacity-95" />
+                          <span className="text-[10px] text-zinc-200 font-medium">AI</span>
+                        </div>
+                        <div className="text-[9px] uppercase tracking-[0.12em] text-[#53617a] mb-2">Project</div>
+                        <div className="space-y-1.5 text-[9px]">
+                          <div className="text-[#5d6f8d]">Relational Agents</div>
+                          <div className="text-[#5d6f8d]">Knowledge Bases</div>
+                          <div className="text-[#88a5ff] bg-[#101a2d] border border-[#253551] rounded px-1.5 py-1">Analytics Suite</div>
+                          <div className="text-[#5d6f8d]">Members</div>
+                          <div className="text-[#5d6f8d]">Settings</div>
+                        </div>
+                        <div className="mt-auto pt-3 border-t border-[#131c2b] text-[8px] text-[#5c6a84]">
+                          domnik.novozamsky
+                        </div>
+                      </aside>
+
+                      <div className="p-3.5 flex flex-col gap-2.5">
+                        <div className="h-8 rounded-md border border-[#1a263b] bg-[#070d19] px-3 flex items-center justify-between">
+                          <div className="text-[9px] text-[#7383a0]">Home  ›  PromethistAI Inc  ›  Convert  ›  <span className="text-zinc-200">Analytics</span></div>
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-[8px] text-zinc-300 border border-[#283752] rounded px-1.5 py-0.5">AI Assistant</span>
+                            <span className="text-[8px] text-white bg-[#5568ff] rounded px-1.5 py-0.5">Studio</span>
+                          </div>
+                        </div>
+
+                        <div className="rounded-md border border-[#1a263b] bg-[#0a1120] p-2.5">
+                          <div className="grid grid-cols-6 gap-1.5">
+                            <div className="rounded border border-[#24324c] bg-[#070d18] px-1.5 py-1.5">
+                              <div className="text-[7px] uppercase text-[#5f6f8b] mb-0.5">From</div>
+                              <div className="text-[8px] text-[#a9b7ce]">18.01.2026</div>
+                            </div>
+                            <div className="rounded border border-[#24324c] bg-[#070d18] px-1.5 py-1.5">
+                              <div className="text-[7px] uppercase text-[#5f6f8b] mb-0.5">To</div>
+                              <div className="text-[8px] text-[#a9b7ce]">17.02.2026</div>
+                            </div>
+                            <div className="rounded border border-[#24324c] bg-[#070d18] px-1.5 py-1.5">
+                              <div className="text-[7px] uppercase text-[#5f6f8b] mb-0.5">Period</div>
+                              <div className="text-[8px] text-[#a9b7ce]">Last 30 days</div>
+                            </div>
+                            <div className="rounded border border-[#24324c] bg-[#070d18] px-1.5 py-1.5">
+                              <div className="text-[7px] uppercase text-[#5f6f8b] mb-0.5">Agent</div>
+                              <div className="text-[8px] text-[#a9b7ce]">All Agents</div>
+                            </div>
+                            <div className="rounded border border-[#24324c] bg-[#070d18] px-1.5 py-1.5">
+                              <div className="text-[7px] uppercase text-[#5f6f8b] mb-0.5">User</div>
+                              <div className="text-[8px] text-[#a9b7ce]">All Users</div>
+                            </div>
+                            <div className="rounded border border-[#24324c] bg-[#070d18] px-1.5 py-1.5">
+                              <div className="text-[7px] uppercase text-[#5f6f8b] mb-0.5">Group</div>
+                              <div className="text-[8px] text-[#a9b7ce]">All Groups</div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="pb-1 border-b border-[#151f31]">
+                          <h3 className="text-[13px] text-zinc-100 font-semibold">Evaluation Results</h3>
+                          <p className="text-[9px] text-[#6a7892] mt-0.5">Modular evaluation analytics drawn from configured blocks.</p>
+                        </div>
+
+                        <div className="grid grid-cols-3 gap-2 flex-1">
+                          <div className="rounded-md border border-[#25344f] bg-[#0f1727] p-2 flex flex-col">
+                            <div className="flex items-center justify-between mb-1">
+                              <span className="text-[7px] uppercase tracking-wide text-emerald-300 bg-emerald-300/10 px-1.5 py-0.5 rounded">Pass/Fail</span>
+                              <span className="text-[9px] text-zinc-300">Level 1</span>
+                            </div>
+                            <p className="text-[8px] text-[#6f7d96] mb-1.5">Junior Associate</p>
+                            <div className="rounded bg-[#070c16] border border-[#1a2539] p-1.5">
+                              <div className="text-[12px] text-zinc-100 font-semibold">78%</div>
+                              <div className="h-1 rounded-full bg-[#19263d] mt-1"><div className="h-1 rounded-full bg-emerald-400 w-[78%]" /></div>
+                            </div>
+                            <div className="mt-auto pt-1.5 text-[8px] text-[#5f6e88]">● Active</div>
+                          </div>
+
+                          <div className="rounded-md border border-[#25344f] bg-[#0f1727] p-2 flex flex-col">
+                            <div className="flex items-center justify-between mb-1">
+                              <span className="text-[7px] uppercase tracking-wide text-emerald-300 bg-emerald-300/10 px-1.5 py-0.5 rounded">Pass/Fail</span>
+                              <span className="text-[9px] text-zinc-300">Level 2</span>
+                            </div>
+                            <p className="text-[8px] text-[#6f7d96] mb-1.5">Sales Proficiency</p>
+                            <div className="rounded bg-[#070c16] border border-[#1a2539] p-1.5">
+                              <div className="text-[12px] text-zinc-100 font-semibold">62%</div>
+                              <div className="h-1 rounded-full bg-[#19263d] mt-1"><div className="h-1 rounded-full bg-emerald-400 w-[62%]" /></div>
+                            </div>
+                            <div className="mt-auto pt-1.5 text-[8px] text-[#5f6e88]">● Active</div>
+                          </div>
+
+                          <div className="rounded-md border border-[#25344f] bg-[#0f1727] p-2 flex flex-col">
+                            <div className="flex items-center justify-between mb-1">
+                              <span className="text-[7px] uppercase tracking-wide text-sky-300 bg-sky-300/10 px-1.5 py-0.5 rounded">Score</span>
+                              <span className="text-[9px] text-zinc-300">Risk</span>
+                            </div>
+                            <p className="text-[8px] text-[#6f7d96] mb-1.5">Regulatory Risk</p>
+                            <div className="rounded bg-[#070c16] border border-[#1a2539] p-1.5">
+                              <div className="text-[12px] text-zinc-100 font-semibold">73</div>
+                              <svg viewBox="0 0 120 24" className="w-full h-4 mt-1">
+                                <path d="M1 18 L20 15 L40 16 L60 13 L80 14 L100 11 L119 12" fill="none" stroke="rgba(59,130,246,0.9)" strokeWidth="1.6" />
+                              </svg>
+                            </div>
+                            <div className="mt-auto pt-1.5 text-[8px] text-[#5f6e88]">● Active</div>
+                          </div>
+
+                          <div className="rounded-md border border-[#25344f] bg-[#0f1727] p-2 flex flex-col">
+                            <div className="flex items-center justify-between mb-1">
+                              <span className="text-[7px] uppercase tracking-wide text-amber-300 bg-amber-300/10 px-1.5 py-0.5 rounded">Text</span>
+                              <span className="text-[9px] text-zinc-300">Analysis</span>
+                            </div>
+                            <p className="text-[8px] text-[#6f7d96] mb-1">Objection Handling</p>
+                            <div className="rounded bg-[#1b140a] border border-amber-500/25 p-1.5 text-[8px] text-amber-100/80">“Lost engagement at fee objection.”</div>
+                            <div className="mt-auto pt-1.5 text-[8px] text-[#5f6e88]">Last run: 2m ago</div>
+                          </div>
+
+                          <div className="rounded-md border border-[#25344f] bg-[#0f1727] p-2 flex flex-col">
+                            <div className="flex items-center justify-between mb-1">
+                              <span className="text-[7px] uppercase tracking-wide text-purple-300 bg-purple-300/10 px-1.5 py-0.5 rounded">List</span>
+                              <span className="text-[9px] text-zinc-300">Opportunities</span>
+                            </div>
+                            <p className="text-[8px] text-[#6f7d96] mb-1">Missed Products</p>
+                            <div className="flex flex-wrap gap-1">
+                              <span className="text-[7px] px-1.5 py-0.5 rounded bg-purple-400/10 border border-purple-400/20 text-purple-200">ETFs</span>
+                              <span className="text-[7px] px-1.5 py-0.5 rounded bg-purple-400/10 border border-purple-400/20 text-purple-200">Savings</span>
+                              <span className="text-[7px] px-1.5 py-0.5 rounded bg-purple-400/10 border border-purple-400/20 text-purple-200">Travel</span>
+                            </div>
+                            <div className="mt-auto pt-1.5 text-[8px] text-[#5f6e88]">Frequency: 68%</div>
+                          </div>
+
+                          <div className="rounded-md border border-[#25344f] bg-[#0f1727] p-2 flex flex-col">
+                            <div className="flex items-center justify-between mb-1">
+                              <span className="text-[7px] uppercase tracking-wide text-emerald-300 bg-emerald-300/10 px-1.5 py-0.5 rounded">Pass/Fail</span>
+                              <span className="text-[9px] text-zinc-300">Level 3</span>
+                            </div>
+                            <p className="text-[8px] text-[#6f7d96] mb-1.5">Senior Wealth Advisory</p>
+                            <div className="rounded bg-[#070c16] border border-[#1a2539] p-1.5">
+                              <div className="text-[12px] text-zinc-100 font-semibold">44%</div>
+                              <div className="h-1 rounded-full bg-[#19263d] mt-1"><div className="h-1 rounded-full bg-amber-400 w-[44%]" /></div>
+                            </div>
+                            <div className="mt-auto pt-1.5 text-[8px] text-[#5f6e88]">● Active</div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                    <div className="h-40 w-full bg-white/[0.03] rounded-lg border border-white/[0.07]"></div>
                   </div>
                 </div>
               </Slide>
@@ -422,13 +504,16 @@ export default function App() {
                 </div>
               </Slide>
 
-              <Slide tone="bg-zinc-950/20" align="center">
+              <Slide tone="bg-zinc-950/25" align="center">
                 <div className="w-full px-4 md:px-8 text-center">
-                  <h2 className="text-3xl md:text-4xl font-light tracking-tight text-zinc-100 mb-10">
-                    The <MetallicText>Business Impact</MetallicText>
+                  <h2 className="text-3xl md:text-4xl font-light tracking-tight text-zinc-100 mb-4">
+                    Ready to transform your <MetallicText>enterprise execution?</MetallicText>
                   </h2>
+                  <p className="text-lg text-zinc-500 font-light mb-8 max-w-2xl mx-auto">
+                    Stop testing memory and start driving measurable outcomes: faster ramp, higher message consistency, and stronger conversion behavior.
+                  </p>
 
-                  <div className="grid md:grid-cols-3 gap-10 max-w-4xl mx-auto mb-14">
+                  <div className="grid md:grid-cols-3 gap-7 max-w-4xl mx-auto mb-10 text-left">
                     <div>
                       <div className="text-3xl font-light text-zinc-200 mb-2">Ramp</div>
                       <div className="text-sm font-medium tracking-widest uppercase text-zinc-600 mb-2">Time to Value</div>
@@ -446,26 +531,6 @@ export default function App() {
                     </div>
                   </div>
 
-                  <div className="max-w-4xl mx-auto pt-8 border-t border-white/[0.07]">
-                    <p className="text-xs tracking-widest text-zinc-600 uppercase mb-8">A proven partner for long-term growth</p>
-                    <div className="flex flex-wrap justify-center items-center gap-10 md:gap-16 opacity-40 hover:opacity-70 transition-opacity">
-                      <span className="text-xl font-bold tracking-tight">T-Mobile</span>
-                      <span className="text-xl font-bold tracking-tight">Erste Group</span>
-                      <span className="text-xl font-bold tracking-tight">Kyndryl</span>
-                      <span className="text-xl font-bold tracking-tight">Adastra</span>
-                    </div>
-                  </div>
-                </div>
-              </Slide>
-
-              <Slide tone="bg-zinc-950/25" align="center">
-                <div className="w-full px-4 md:px-8 text-center">
-                  <h2 className="text-3xl md:text-4xl font-light tracking-tight text-zinc-100 mb-5">
-                    Ready to transform your <MetallicText>enterprise execution?</MetallicText>
-                  </h2>
-                  <p className="text-lg text-zinc-500 font-light mb-9 max-w-xl mx-auto">
-                    Stop testing memory. Start ensuring readiness. Join industry leaders using Promethist Empower.
-                  </p>
                   <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                     <button className="w-full sm:w-auto px-8 py-4 rounded-full bg-zinc-100 text-zinc-950 font-medium transition-transform hover:scale-[1.02] hover:bg-white">
                       Request a Demo
@@ -473,6 +538,16 @@ export default function App() {
                     <button className="w-full sm:w-auto px-8 py-4 rounded-full border border-white/[0.14] bg-white/[0.03] text-zinc-200 font-medium hover:border-white/[0.22] hover:bg-white/[0.06] transition-colors">
                       Contact Sales
                     </button>
+                  </div>
+
+                  <div className="max-w-4xl mx-auto pt-8 mt-9 border-t border-white/[0.07]">
+                    <p className="text-xs tracking-widest text-zinc-600 uppercase mb-7">A proven partner for long-term growth</p>
+                    <div className="flex flex-wrap justify-center items-center gap-10 md:gap-16 opacity-40 hover:opacity-70 transition-opacity">
+                      <span className="text-xl font-bold tracking-tight">T-Mobile</span>
+                      <span className="text-xl font-bold tracking-tight">Erste Group</span>
+                      <span className="text-xl font-bold tracking-tight">Kyndryl</span>
+                      <span className="text-xl font-bold tracking-tight">Adastra</span>
+                    </div>
                   </div>
                 </div>
               </Slide>

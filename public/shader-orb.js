@@ -201,9 +201,19 @@ class ShaderOrb {
         this.camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
         this.isThinking = false;
         this.isPlaying = true;
+        this.frameHandle = null;
+        this.isDocumentVisible = document.visibilityState !== "hidden";
+
+        const saveData = navigator.connection && navigator.connection.saveData;
+        const reducedMotionQuery = window.matchMedia
+            ? window.matchMedia("(prefers-reduced-motion: reduce)")
+            : null;
+        const prefersReducedMotion = reducedMotionQuery && reducedMotionQuery.matches;
+        const maxPixelRatio = saveData || prefersReducedMotion ? 1 : 1.5;
+        this.pixelRatio = Math.min(window.devicePixelRatio || 1, maxPixelRatio);
 
         this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-        this.renderer.setPixelRatio(window.devicePixelRatio);
+        this.renderer.setPixelRatio(this.pixelRatio);
         this.renderer.setSize(this.container.offsetWidth, this.container.offsetHeight);
         this.container.appendChild(this.renderer.domElement);
 
@@ -240,14 +250,16 @@ class ShaderOrb {
         this.setupScene();
 
         this.handleResize = this.handleResize.bind(this);
+        this.handleVisibilityChange = this.handleVisibilityChange.bind(this);
         this.render = this.render.bind(this);
 
-        requestAnimationFrame(() => {
+        this.frameHandle = requestAnimationFrame(() => {
             this.handleResize();
             this.render();
         });
 
         window.addEventListener("resize", this.handleResize);
+        document.addEventListener("visibilitychange", this.handleVisibilityChange);
     }
 
     captureUniformValues(source) {
@@ -389,12 +401,24 @@ class ShaderOrb {
         if (!this.container) return;
         const width = this.container.offsetWidth || 1;
         const height = this.container.offsetHeight || 1;
+        this.renderer.setPixelRatio(this.pixelRatio);
         this.renderer.setSize(width, height);
         this.uniforms.uResolution.value.set(width, height);
     }
 
+    handleVisibilityChange() {
+        this.isDocumentVisible = document.visibilityState !== "hidden";
+        if (this.isDocumentVisible && this.isPlaying && this.frameHandle === null) {
+            this.frameHandle = requestAnimationFrame(this.render);
+        }
+    }
+
     render() {
         if (!this.isPlaying) return;
+        if (!this.isDocumentVisible) {
+            this.frameHandle = null;
+            return;
+        }
 
         const delta = this.clock.getDelta();
         const time = this.clock.getElapsedTime();
@@ -434,12 +458,17 @@ class ShaderOrb {
         );
 
         this.renderer.render(this.scene, this.camera);
-        requestAnimationFrame(this.render);
+        this.frameHandle = requestAnimationFrame(this.render);
     }
 
     stop() {
         this.isPlaying = false;
+        if (this.frameHandle !== null) {
+            cancelAnimationFrame(this.frameHandle);
+            this.frameHandle = null;
+        }
         window.removeEventListener("resize", this.handleResize);
+        document.removeEventListener("visibilitychange", this.handleVisibilityChange);
         this.renderer.dispose();
     }
 }

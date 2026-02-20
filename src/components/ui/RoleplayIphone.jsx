@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 
-export default function RoleplayIphone() {
+export default function RoleplayIphone({ frameScale = 0.94 }) {
   const roleplayVideoScreenRef = useRef(null);
   const engageVideoRef = useRef(null);
   const roleplayResultsPopupRef = useRef(null);
@@ -51,8 +51,7 @@ export default function RoleplayIphone() {
 
       roleplayVideoScreen.style.display = "flex";
       orbContainer.classList.add("blurred-bg");
-
-      setAnim([roleplayVideoScreen, orbContainer], { opacity: 0 });
+      setAnim([roleplayVideoScreen, orbContainer], { opacity: 1 });
 
       if (engageVideo) {
         engageVideo.currentTime = 0;
@@ -61,18 +60,6 @@ export default function RoleplayIphone() {
           .catch((e) => console.warn("Video auto-play prevented:", e));
       }
 
-      animateTo(roleplayVideoScreen, {
-        opacity: 1,
-        duration: 0.8,
-        ease: "power2.out",
-      });
-      animateTo(orbContainer, {
-        opacity: 1,
-        duration: 1.5,
-        delay: 0.3,
-        ease: "power2.inOut",
-      });
-
       schedule(() => {
         if (isUnmounted || roleplayVideoScreen.style.display === "none") return;
 
@@ -80,10 +67,13 @@ export default function RoleplayIphone() {
           ".roleplay-end-status",
         );
         if (roleplayEndStatus) {
+          roleplayVideoScreen.classList.add("session-ended");
           roleplayEndStatus.style.display = "block";
+          setAnim(roleplayEndStatus, { opacity: 0, y: 22 });
           animateTo(roleplayEndStatus, {
             opacity: 1,
-            duration: 0.8,
+            y: 0,
+            duration: 0.7,
             ease: "power2.out",
           });
 
@@ -93,6 +83,7 @@ export default function RoleplayIphone() {
 
             animateTo(roleplayEndStatus, {
               opacity: 0,
+              y: -6,
               duration: 0.5,
               ease: "power2.in",
               onComplete: () => {
@@ -136,6 +127,9 @@ export default function RoleplayIphone() {
                           roleplayResultsPopup.style.display = "none";
                         if (roleplayVideoScreen)
                           roleplayVideoScreen.style.display = "none";
+                        if (roleplayVideoScreen) {
+                          roleplayVideoScreen.classList.remove("session-ended");
+                        }
                         setAnim(
                           [roleplayResultsPopup, roleplayVideoScreen],
                           { y: 0 },
@@ -161,13 +155,13 @@ export default function RoleplayIphone() {
                 }, 300);
               }, 3000);
             }
-          }, 3500);
+          }, 2200);
         }
-      }, 5000);
+      }, 2800);
     };
 
-    // Start flow automatically
-    schedule(startRoleplayFlow, 800);
+    // Start flow immediately on mount so the phone never appears as an empty shell.
+    startRoleplayFlow();
 
     return () => {
       isUnmounted = true;
@@ -181,7 +175,7 @@ export default function RoleplayIphone() {
   return (
     <div
       className="iphone-frame"
-      style={{ transform: "scale(1)", transformOrigin: "top center" }}
+      style={{ transform: `scale(${frameScale})`, transformOrigin: "top center" }}
     >
       <div className="dynamic-island"></div>
 
@@ -191,7 +185,7 @@ export default function RoleplayIphone() {
       <div
         className="roleplay-video-screen roleplay-fullscreen"
         ref={roleplayVideoScreenRef}
-        style={{ display: "none" }}
+        style={{ display: "flex" }}
       >
         <div className="fullscreen-video-container">
           <video
@@ -242,7 +236,8 @@ export default function RoleplayIphone() {
         </div>
 
         <div className="roleplay-end-status" style={{ display: "none" }}>
-          <h3>Role play simulation has ended</h3>
+          <h3>Simulation complete</h3>
+          <p>Generating your evaluation overview...</p>
         </div>
       </div>
 
@@ -253,32 +248,21 @@ export default function RoleplayIphone() {
         style={{ display: "none" }}
       >
         <div className="popup-handle"></div>
-        <div className="popup-graph">
-          <div className="graph-bar" style={{ height: "30%" }}></div>
-          <div className="graph-bar" style={{ height: "50%" }}></div>
-          <div className="graph-bar" style={{ height: "40%" }}></div>
-          <div className="graph-bar" style={{ height: "70%" }}></div>
-          <div className="graph-bar" style={{ height: "60%" }}></div>
-        </div>
-        <div
-          className="popup-content"
-          style={{ textAlign: "center", marginTop: "0px" }}
-        >
-          <p
-            style={{
-              color: "rgba(255,255,255,0.7)",
-              fontSize: "14px",
-              marginBottom: "20px",
-            }}
-          >
-            Role play simulation has ended – see results
-          </p>
+        <div className="popup-content">
+          <div className="evaluation-empty-state">
+            <div className="empty-state-dot" />
+            <div>
+              <p className="empty-state-title">Evaluation queued</p>
+              <p className="empty-state-subtitle">
+                No report loaded yet. Open evaluation to review insights.
+              </p>
+            </div>
+          </div>
           <button
             className="popup-cta results-cta"
             ref={seeResultsBtnRef}
-            style={{ width: "100%", justifyContent: "center" }}
           >
-            See Results
+            Open Evaluation
           </button>
         </div>
       </div>
@@ -289,40 +273,90 @@ export default function RoleplayIphone() {
         ref={evaluationInsightsScreenRef}
         style={{ display: "none" }}
       >
-        <div className="insights-header">
+        <div className="insights-header ri-header">
+          <button className="ri-back-btn" aria-label="Back">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </button>
           <h2>Insights</h2>
+          <span className="ri-header-spacer" />
         </div>
-        <div className="insights-content">
-          <div className="insights-section">
-            <h3 className="section-title">INSIGHTS</h3>
-            <p className="section-subtitle">General Insights & Trends</p>
+        <div className="insights-content ri-content">
+          <div className="ri-section-label">INSIGHTS</div>
+          <div className="ri-section-subtitle">General Insights & Trends</div>
 
-            <div className="insight-card engagement-card">
-              <div className="card-header">
-                <div className="card-title">
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="#22c55e"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline>
-                    <polyline points="16 7 22 7 22 13"></polyline>
+          <div className="ri-stack">
+            <div className="ri-rail" />
+
+            <div className="ri-card ri-engagement-card">
+              <div className="ri-card-header">
+                <div className="ri-card-title">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2dd4bf" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                    <polyline points="17 6 23 6 23 12"></polyline>
                   </svg>
                   <span>Engagement Trend</span>
                 </div>
-                <span className="trend-value">+18%</span>
+                <span className="ri-value positive">+18%</span>
               </div>
-              <div className="trend-chart">
-                <div className="bar bar-1"></div>
-                <div className="bar bar-2"></div>
-                <div className="bar bar-3"></div>
-                <div className="bar bar-4"></div>
-                <div className="bar bar-5 active"></div>
+              <div className="ri-bars">
+                <div className="ri-bar h1" />
+                <div className="ri-bar h2" />
+                <div className="ri-bar h3" />
+                <div className="ri-bar h4" />
+                <div className="ri-bar h5 active" />
+              </div>
+              <p className="ri-copy">
+                Measures how quickly the banker moved the client from cold to interested.
+              </p>
+            </div>
+
+            <div className="ri-card ri-gaps-card">
+              <div className="ri-card-title">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="8" x2="12" y2="12"></line>
+                  <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+                <span>Knowledge Gaps</span>
+              </div>
+              <div className="ri-chips">
+                <span className="ri-chip">Tax Diversification</span>
+                <span className="ri-chip">Expense Ratios</span>
+              </div>
+              <p className="ri-copy">
+                Topics where answers became hesitant or less precise during the role-play.
+              </p>
+            </div>
+
+            <div className="ri-card ri-feedback-card">
+              <div className="ri-card-title">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3l-8.47-14.14a2 2 0 0 0-3.42 0z"></path>
+                  <line x1="12" y1="9" x2="12" y2="13"></line>
+                  <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                </svg>
+                <span>Critical Feedback</span>
+              </div>
+              <p className="ri-quote">
+                “High-frequency jargon at 04:20 caused a visible drop in client confidence.”
+              </p>
+              <p className="ri-copy">Coach recommendation: simplify fee language and pause for confirmation.</p>
+            </div>
+
+            <div className="ri-history-label">SESSION HISTORY</div>
+            <div className="ri-history-card">
+              <div className="ri-history-top">
+                <span className="ri-history-date">Today, 9:41 AM</span>
+                <span className="ri-live-badge">Live</span>
+              </div>
+              <div className="ri-history-bottom">
+                <div>
+                  <p className="ri-history-title">Engagement Velocity</p>
+                  <p className="ri-history-sub">72/100</p>
+                </div>
+                <div className="ri-score-circle">72</div>
               </div>
             </div>
           </div>
