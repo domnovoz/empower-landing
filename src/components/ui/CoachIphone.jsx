@@ -229,14 +229,14 @@ export default function CoachIphone({ replayKey = 0 }) {
       [24200, () => shaderOrbRef.current?.setSpeaking?.(true)],   // AGENT_MSG dots
       [27500, () => shaderOrbRef.current?.setThinking?.(true)],   // back to deep work
       [45200, () => shaderOrbRef.current?.setSpeaking?.(true)],   // AGENT_FINAL
-      [47700, () => shaderOrbRef.current?.setListening?.(true)],  // USER_MSG user_sure
-      [49500, () => shaderOrbRef.current?.setState?.('idle')],    // drawer open
+      [50700, () => shaderOrbRef.current?.setListening?.(true)],  // USER_MSG user_sure
+      [52500, () => shaderOrbRef.current?.setState?.('idle')],    // drawer open
     ];
     orbSchedule.forEach(([delay, fn]) => {
       schedule(fn, delay);
     });
 
-    // DRAWER at t:49500ms — 2s after USER_SURE
+    // DRAWER at t:52500ms — ~2s after USER_SURE
     schedule(() => {
       if (!roleplayPopupRef.current) return;
 
@@ -257,7 +257,7 @@ export default function CoachIphone({ replayKey = 0 }) {
 
       // Auto-transition to fullscreen after 4 seconds
       schedule(triggerFullscreenTransition, 4000);
-    }, 49500);
+    }, 52500);
 
     if (shaderOrbRef.current?.setListening) {
       shaderOrbRef.current.setListening(true);

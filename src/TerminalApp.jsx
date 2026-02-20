@@ -181,7 +181,7 @@ export default function App({ onReplay = null }) {
             setEngineMeta((m) => ({ ...m, contextNote: s.content }));
             const absorbTimer = setTimeout(() => {
               setEngineMeta((m) => ({ ...m, contextNote: null }));
-            }, 4000);
+            }, 8000);
             timersRef.current.push(absorbTimer);
             break;
           }

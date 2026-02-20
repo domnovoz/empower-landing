@@ -4,7 +4,7 @@ export const USER_TEXT_2 = "Hm, actually...";
 export const USER_TEXT_3 = "Oh yes, it's tomorrow at 2.";
 export const AGENT_DOTS = "Got it, give me a moment.";
 export const SIGNAL_CONTENT = `✕ Block Premium Portfolio — client rejected similar products\n→ Recommend Capital Protected Notes (97% fit)\n→ Suggest pitch role-play — advisor over-explains math`;
-export const FINAL_TEXT = "Capital Protected Notes — 100% principal, simple story.\n\nSkip the math, she won't stay with you. Want to role-play the pitch before you go in?";
+export const FINAL_TEXT = "Use one simple line: your principal stays protected while still giving room for growth.\n\nWant a focused 2-minute role-play for your 2 PM meeting tomorrow?";
 export const USER_SURE = "Sure!";
 
 export const SIM = [
@@ -147,9 +147,9 @@ export const SIM = [
   { t: 43500, action: "ENGINE_COMPLETE" },
   { t: 44500, action: "COMPOSING" },
   { t: 45000, action: "AGENT_FINAL" },
-  { t: 47500, action: "USER_MSG", id: "user_sure" },
-  { t: 49000, action: "AGENT_LISTENING" },
-  { t: 49500, action: "ENGINE_COMPACT" },
+  { t: 50500, action: "USER_MSG", id: "user_sure" },
+  { t: 52000, action: "AGENT_LISTENING" },
+  { t: 52500, action: "ENGINE_COMPACT" },
 ];
 
 export const COACH_MESSAGES = [
@@ -159,7 +159,7 @@ export const COACH_MESSAGES = [
   { t: 21500, role: "user", text: USER_TEXT_3 },
   { t: 24000, role: "agent", text: AGENT_DOTS },
   { t: 45000, role: "agent", text: FINAL_TEXT },
-  { t: 47500, role: "user", text: USER_SURE },
+  { t: 50500, role: "user", text: USER_SURE },
 ];
 
 export const getAgentText = (id) => {

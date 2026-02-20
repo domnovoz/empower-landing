@@ -226,10 +226,6 @@ export default function App() {
                   <p className="mb-8 max-w-2xl text-base leading-relaxed text-zinc-400 sm:text-lg md:mb-10 md:text-xl">
                     Turn training into a direct driver of revenue with dynamic AI coaching and measurable conversational performance.
                   </p>
-                  <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-                    <button className="cta-primary w-full sm:w-auto">Request a Demo</button>
-                    <button className="cta-ghost w-full sm:w-auto">Watch Product Tour</button>
-                  </div>
                 </div>
               </Slide>
 
@@ -340,145 +336,116 @@ export default function App() {
                     </div>
                   </div>
 
-                  <div className="relative aspect-square overflow-hidden rounded-2xl border border-[#1a2539] bg-[#050912] shadow-[0_28px_64px_-40px_rgba(0,0,0,0.95)]">
-                    <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_78%_4%,rgba(68,90,160,0.24),transparent_42%)]" />
-                    <div className="h-full grid grid-cols-[92px_minmax(0,1fr)] relative">
-                      <aside className="border-r border-[#141d2e] bg-[#070d18] p-3.5 flex flex-col">
-                        <div className="flex items-center gap-2 mb-6">
+                  <div className="relative aspect-square overflow-hidden rounded-2xl border border-[#1a2335] bg-[#03070f] shadow-[0_28px_64px_-40px_rgba(0,0,0,0.98)]">
+                    <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_78%_4%,rgba(66,104,176,0.24),transparent_45%)]" />
+                    <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(5,10,18,0.08)_0%,rgba(2,4,10,0.74)_100%)]" />
+                    <div className="relative grid h-full grid-cols-[94px_minmax(0,1fr)]">
+                      <aside className="flex flex-col border-r border-[#111a2b] bg-[#040912] p-3.5">
+                        <div className="mb-6 flex items-center gap-2">
                           <img src={logo} alt="Promethist" className="h-4 w-auto opacity-95" />
-                          <span className="text-[10px] text-zinc-200 font-medium">AI</span>
+                          <span className="text-[10px] font-medium text-zinc-200">AI</span>
                         </div>
-                        <div className="text-[9px] uppercase tracking-[0.12em] text-[#53617a] mb-2">Project</div>
+                        <div className="mb-2 text-[9px] uppercase tracking-[0.12em] text-[#53617a]">Project</div>
                         <div className="space-y-1.5 text-[9px]">
                           <div className="text-[#5d6f8d]">Relational Agents</div>
                           <div className="text-[#5d6f8d]">Knowledge Bases</div>
-                          <div className="text-[#88a5ff] bg-[#101a2d] border border-[#253551] rounded px-1.5 py-1">Analytics Suite</div>
-                          <div className="text-[#5d6f8d]">Members</div>
+                          <div className="rounded border border-[#253551] bg-[#0d1628] px-1.5 py-1 text-[#97b5ff]">Analytics Suite</div>
+                          <div className="text-[#5d6f8d]">Evaluation Runs</div>
                           <div className="text-[#5d6f8d]">Settings</div>
                         </div>
-                        <div className="mt-auto pt-3 border-t border-[#131c2b] text-[8px] text-[#5c6a84]">
-                          domnik.novozamsky
-                        </div>
+                        <div className="mt-auto border-t border-[#111a2b] pt-3 text-[8px] text-[#5c6a84]">domnik.novozamsky</div>
                       </aside>
 
-                      <div className="p-3.5 flex flex-col gap-2.5">
-                        <div className="h-8 rounded-md border border-[#1a263b] bg-[#070d19] px-3 flex items-center justify-between">
-                          <div className="text-[9px] text-[#7383a0]">Home  ›  PromethistAI Inc  ›  Convert  ›  <span className="text-zinc-200">Analytics</span></div>
+                      <div className="flex flex-col gap-2.5 p-3.5">
+                        <div className="flex h-8 items-center justify-between rounded-md border border-[#162239] bg-[#060d1a] px-3">
+                          <div className="text-[9px] text-[#7285a7]">Home  ›  Convert  ›  Intelligence  ›  <span className="text-zinc-200">Analytics</span></div>
                           <div className="flex items-center gap-1.5">
-                            <span className="text-[8px] text-zinc-300 border border-[#283752] rounded px-1.5 py-0.5">AI Assistant</span>
-                            <span className="text-[8px] text-white bg-[#5568ff] rounded px-1.5 py-0.5">Studio</span>
+                            <span className="rounded border border-[#2b3a58] px-1.5 py-0.5 text-[8px] text-zinc-300">Live Cohort</span>
+                            <span className="rounded bg-[#5a72ff] px-1.5 py-0.5 text-[8px] text-white">Realtime</span>
                           </div>
                         </div>
 
-                        <div className="rounded-md border border-[#1a263b] bg-[#0a1120] p-2.5">
-                          <div className="grid grid-cols-6 gap-1.5">
-                            <div className="rounded border border-[#24324c] bg-[#070d18] px-1.5 py-1.5">
-                              <div className="text-[7px] uppercase text-[#5f6f8b] mb-0.5">From</div>
-                              <div className="text-[8px] text-[#a9b7ce]">18.01.2026</div>
-                            </div>
-                            <div className="rounded border border-[#24324c] bg-[#070d18] px-1.5 py-1.5">
-                              <div className="text-[7px] uppercase text-[#5f6f8b] mb-0.5">To</div>
-                              <div className="text-[8px] text-[#a9b7ce]">17.02.2026</div>
-                            </div>
-                            <div className="rounded border border-[#24324c] bg-[#070d18] px-1.5 py-1.5">
-                              <div className="text-[7px] uppercase text-[#5f6f8b] mb-0.5">Period</div>
-                              <div className="text-[8px] text-[#a9b7ce]">Last 30 days</div>
-                            </div>
-                            <div className="rounded border border-[#24324c] bg-[#070d18] px-1.5 py-1.5">
-                              <div className="text-[7px] uppercase text-[#5f6f8b] mb-0.5">Agent</div>
-                              <div className="text-[8px] text-[#a9b7ce]">All Agents</div>
-                            </div>
-                            <div className="rounded border border-[#24324c] bg-[#070d18] px-1.5 py-1.5">
-                              <div className="text-[7px] uppercase text-[#5f6f8b] mb-0.5">User</div>
-                              <div className="text-[8px] text-[#a9b7ce]">All Users</div>
-                            </div>
-                            <div className="rounded border border-[#24324c] bg-[#070d18] px-1.5 py-1.5">
-                              <div className="text-[7px] uppercase text-[#5f6f8b] mb-0.5">Group</div>
-                              <div className="text-[8px] text-[#a9b7ce]">All Groups</div>
-                            </div>
-                          </div>
+                        <div className="border-b border-[#141f31] pb-1.5">
+                          <h3 className="text-[13px] font-semibold text-zinc-100">Evaluation Results</h3>
+                          <p className="mt-0.5 text-[9px] text-[#6a7892]">
+                            Modular evaluation analytics drawn from configured evaluations. Each block reveals where conversations break and where coaching lifts performance.
+                          </p>
                         </div>
 
-                        <div className="pb-1 border-b border-[#151f31]">
-                          <h3 className="text-[13px] text-zinc-100 font-semibold">Evaluation Results</h3>
-                          <p className="text-[9px] text-[#6a7892] mt-0.5">Modular evaluation analytics drawn from configured blocks.</p>
-                        </div>
-
-                        <div className="grid grid-cols-3 gap-2 flex-1">
-                          <div className="rounded-md border border-[#25344f] bg-[#0f1727] p-2 flex flex-col">
-                            <div className="flex items-center justify-between mb-1">
-                              <span className="text-[7px] uppercase tracking-wide text-emerald-300 bg-emerald-300/10 px-1.5 py-0.5 rounded">Pass/Fail</span>
-                              <span className="text-[9px] text-zinc-300">Level 1</span>
+                        <div className="grid flex-1 grid-cols-3 gap-2">
+                          <div className="flex flex-col rounded-md border border-[#22324f] bg-[#0b1425] p-2">
+                            <div className="mb-1 flex items-center gap-1">
+                              <span className="rounded bg-emerald-300/10 px-1.5 py-0.5 text-[7px] uppercase tracking-wide text-emerald-300">Pass/Fail</span>
+                              <span className="text-[9px] text-zinc-200">Level 1: Junior Associate</span>
                             </div>
-                            <p className="text-[8px] text-[#6f7d96] mb-1.5">Junior Associate</p>
-                            <div className="rounded bg-[#070c16] border border-[#1a2539] p-1.5">
-                              <div className="text-[12px] text-zinc-100 font-semibold">78%</div>
-                              <div className="h-1 rounded-full bg-[#19263d] mt-1"><div className="h-1 rounded-full bg-emerald-400 w-[78%]" /></div>
+                            <p className="mb-1.5 text-[8px] text-[#7283a1]">Baseline competency check: greeting, identity verification, and polite closing compliance.</p>
+                            <div className="rounded border border-[#1a2539] bg-[#050a14] p-1.5 text-[8px] text-[#aebddb]">
+                              <div className="text-[12px] font-semibold text-zinc-100">78%</div>
+                              <div className="mt-1 flex justify-between"><span className="text-emerald-300">✓ Passed 32</span><span>Failed 9</span></div>
                             </div>
                             <div className="mt-auto pt-1.5 text-[8px] text-[#5f6e88]">● Active</div>
                           </div>
 
-                          <div className="rounded-md border border-[#25344f] bg-[#0f1727] p-2 flex flex-col">
-                            <div className="flex items-center justify-between mb-1">
-                              <span className="text-[7px] uppercase tracking-wide text-emerald-300 bg-emerald-300/10 px-1.5 py-0.5 rounded">Pass/Fail</span>
-                              <span className="text-[9px] text-zinc-300">Level 2</span>
+                          <div className="flex flex-col rounded-md border border-[#22324f] bg-[#0b1425] p-2">
+                            <div className="mb-1 flex items-center gap-1">
+                              <span className="rounded bg-emerald-300/10 px-1.5 py-0.5 text-[7px] uppercase tracking-wide text-emerald-300">Pass/Fail</span>
+                              <span className="text-[9px] text-zinc-200">Level 2: Sales Proficiency</span>
                             </div>
-                            <p className="text-[8px] text-[#6f7d96] mb-1.5">Sales Proficiency</p>
-                            <div className="rounded bg-[#070c16] border border-[#1a2539] p-1.5">
-                              <div className="text-[12px] text-zinc-100 font-semibold">62%</div>
-                              <div className="h-1 rounded-full bg-[#19263d] mt-1"><div className="h-1 rounded-full bg-emerald-400 w-[62%]" /></div>
-                            </div>
-                            <div className="mt-auto pt-1.5 text-[8px] text-[#5f6e88]">● Active</div>
-                          </div>
-
-                          <div className="rounded-md border border-[#25344f] bg-[#0f1727] p-2 flex flex-col">
-                            <div className="flex items-center justify-between mb-1">
-                              <span className="text-[7px] uppercase tracking-wide text-sky-300 bg-sky-300/10 px-1.5 py-0.5 rounded">Score</span>
-                              <span className="text-[9px] text-zinc-300">Risk</span>
-                            </div>
-                            <p className="text-[8px] text-[#6f7d96] mb-1.5">Regulatory Risk</p>
-                            <div className="rounded bg-[#070c16] border border-[#1a2539] p-1.5">
-                              <div className="text-[12px] text-zinc-100 font-semibold">73</div>
-                              <svg viewBox="0 0 120 24" className="w-full h-4 mt-1">
-                                <path d="M1 18 L20 15 L40 16 L60 13 L80 14 L100 11 L119 12" fill="none" stroke="rgba(59,130,246,0.9)" strokeWidth="1.6" />
-                              </svg>
+                            <p className="mb-1.5 text-[8px] text-[#7283a1]">Evaluates ability to pivot from service to sales and identify at least one cross-sell opportunity.</p>
+                            <div className="rounded border border-[#1a2539] bg-[#050a14] p-1.5 text-[8px] text-[#aebddb]">
+                              <div className="text-[12px] font-semibold text-zinc-100">62%</div>
+                              <div className="mt-1 flex justify-between"><span className="text-emerald-300">✓ Passed 25</span><span>Failed 16</span></div>
                             </div>
                             <div className="mt-auto pt-1.5 text-[8px] text-[#5f6e88]">● Active</div>
                           </div>
 
-                          <div className="rounded-md border border-[#25344f] bg-[#0f1727] p-2 flex flex-col">
-                            <div className="flex items-center justify-between mb-1">
-                              <span className="text-[7px] uppercase tracking-wide text-amber-300 bg-amber-300/10 px-1.5 py-0.5 rounded">Text</span>
-                              <span className="text-[9px] text-zinc-300">Analysis</span>
+                          <div className="flex flex-col rounded-md border border-[#22324f] bg-[#0b1425] p-2">
+                            <div className="mb-1 flex items-center gap-1">
+                              <span className="rounded bg-sky-300/10 px-1.5 py-0.5 text-[7px] uppercase tracking-wide text-sky-300">Score</span>
+                              <span className="text-[9px] text-zinc-200">Regulatory Risk Score</span>
                             </div>
-                            <p className="text-[8px] text-[#6f7d96] mb-1">Objection Handling</p>
-                            <div className="rounded bg-[#1b140a] border border-amber-500/25 p-1.5 text-[8px] text-amber-100/80">“Lost engagement at fee objection.”</div>
-                            <div className="mt-auto pt-1.5 text-[8px] text-[#5f6e88]">Last run: 2m ago</div>
+                            <p className="mb-1.5 text-[8px] text-[#7283a1]">Granular scoring of AML protocol adherence, disclosures, and risk disclaimer accuracy.</p>
+                            <div className="rounded border border-[#1a2539] bg-[#050a14] p-1.5">
+                              <div className="text-[12px] font-semibold text-zinc-100">73 / 100</div>
+                              <div className="mt-1 h-1 rounded bg-[#1a2740]"><div className="h-1 w-[73%] rounded bg-sky-400" /></div>
+                              <div className="mt-1 flex justify-between text-[7px] text-[#6f7f9b]"><span>Min: 42</span><span>Avg: 73</span><span>Max: 95</span></div>
+                            </div>
+                            <div className="mt-auto pt-1.5 text-[8px] text-[#5f6e88]">● Active</div>
                           </div>
 
-                          <div className="rounded-md border border-[#25344f] bg-[#0f1727] p-2 flex flex-col">
-                            <div className="flex items-center justify-between mb-1">
-                              <span className="text-[7px] uppercase tracking-wide text-purple-300 bg-purple-300/10 px-1.5 py-0.5 rounded">List</span>
-                              <span className="text-[9px] text-zinc-300">Opportunities</span>
+                          <div className="flex flex-col rounded-md border border-[#22324f] bg-[#0b1425] p-2">
+                            <div className="mb-1 flex items-center gap-1">
+                              <span className="rounded bg-amber-300/10 px-1.5 py-0.5 text-[7px] uppercase tracking-wide text-amber-300">Text</span>
+                              <span className="text-[9px] text-zinc-200">Objection Handling Analysis</span>
                             </div>
-                            <p className="text-[8px] text-[#6f7d96] mb-1">Missed Products</p>
+                            <p className="mb-1 text-[8px] text-[#7283a1]">Qualitative analysis of how the banker handled the fee objection and emotional resistance.</p>
+                            <div className="rounded border border-amber-500/25 bg-[#1a130a] p-1.5 text-[8px] text-amber-100/85">“Lost engagement when explaining fees using jargon. Recommend simpler vocabulary within first 20 seconds.”</div>
+                            <div className="mt-auto pt-1.5 text-[8px] text-[#5f6e88]">Last run: 30m ago</div>
+                          </div>
+
+                          <div className="flex flex-col rounded-md border border-[#22324f] bg-[#0b1425] p-2">
+                            <div className="mb-1 flex items-center gap-1">
+                              <span className="rounded bg-violet-300/10 px-1.5 py-0.5 text-[7px] uppercase tracking-wide text-violet-300">List</span>
+                              <span className="text-[9px] text-zinc-200">Missed Opportunities</span>
+                            </div>
+                            <p className="mb-1 text-[8px] text-[#7283a1]">Extracts specific financial products matched to client profile but not introduced during the call.</p>
                             <div className="flex flex-wrap gap-1">
-                              <span className="text-[7px] px-1.5 py-0.5 rounded bg-purple-400/10 border border-purple-400/20 text-purple-200">ETFs</span>
-                              <span className="text-[7px] px-1.5 py-0.5 rounded bg-purple-400/10 border border-purple-400/20 text-purple-200">Savings</span>
-                              <span className="text-[7px] px-1.5 py-0.5 rounded bg-purple-400/10 border border-purple-400/20 text-purple-200">Travel</span>
+                              <span className="rounded border border-violet-400/20 bg-violet-400/10 px-1.5 py-0.5 text-[7px] text-violet-200">ETFs</span>
+                              <span className="rounded border border-violet-400/20 bg-violet-400/10 px-1.5 py-0.5 text-[7px] text-violet-200">Savings Account</span>
+                              <span className="rounded border border-violet-400/20 bg-violet-400/10 px-1.5 py-0.5 text-[7px] text-violet-200">Travel Insurance</span>
                             </div>
-                            <div className="mt-auto pt-1.5 text-[8px] text-[#5f6e88]">Frequency: 68%</div>
+                            <div className="mt-auto pt-1.5 text-[8px] text-[#5f6e88]">Frequency across sessions: 68%</div>
                           </div>
 
-                          <div className="rounded-md border border-[#25344f] bg-[#0f1727] p-2 flex flex-col">
-                            <div className="flex items-center justify-between mb-1">
-                              <span className="text-[7px] uppercase tracking-wide text-emerald-300 bg-emerald-300/10 px-1.5 py-0.5 rounded">Pass/Fail</span>
-                              <span className="text-[9px] text-zinc-300">Level 3</span>
+                          <div className="flex flex-col rounded-md border border-[#22324f] bg-[#0b1425] p-2">
+                            <div className="mb-1 flex items-center gap-1">
+                              <span className="rounded bg-emerald-300/10 px-1.5 py-0.5 text-[7px] uppercase tracking-wide text-emerald-300">Pass/Fail</span>
+                              <span className="text-[9px] text-zinc-200">Level 3: Senior Wealth Advisory</span>
                             </div>
-                            <p className="text-[8px] text-[#6f7d96] mb-1.5">Senior Wealth Advisory</p>
-                            <div className="rounded bg-[#070c16] border border-[#1a2539] p-1.5">
-                              <div className="text-[12px] text-zinc-100 font-semibold">44%</div>
-                              <div className="h-1 rounded-full bg-[#19263d] mt-1"><div className="h-1 rounded-full bg-amber-400 w-[44%]" /></div>
+                            <p className="mb-1.5 text-[8px] text-[#7283a1]">Complex needs analysis, tax-efficient framing, and estate planning cue detection.</p>
+                            <div className="rounded border border-[#1a2539] bg-[#050a14] p-1.5 text-[8px] text-[#aebddb]">
+                              <div className="text-[12px] font-semibold text-zinc-100">44%</div>
+                              <div className="mt-1 flex justify-between"><span className="text-emerald-300">✓ Passed 18</span><span>Failed 23</span></div>
                             </div>
                             <div className="mt-auto pt-1.5 text-[8px] text-[#5f6e88]">● Active</div>
                           </div>
@@ -520,33 +487,33 @@ export default function App() {
               </Slide>
 
               <Slide tone="bg-zinc-950/25" align="center" index={5} activeStep={stepIndex} direction={slideDirection}>
-                <div className="w-full px-1 text-center sm:px-3">
-                  <h2 className="mb-4 text-3xl font-light tracking-tight text-zinc-100 md:text-4xl">
+                <div className="mx-auto flex w-full max-w-5xl flex-col justify-center px-1 py-4 text-center sm:px-3 md:py-6">
+                  <h2 className="mb-5 text-3xl font-light tracking-tight text-zinc-100 md:text-4xl">
                     Ready to transform your <MetallicText>enterprise execution?</MetallicText>
                   </h2>
-                  <p className="mx-auto mb-8 max-w-2xl text-base leading-relaxed text-zinc-400 md:text-lg">
+                  <p className="mx-auto mb-11 max-w-2xl text-base leading-relaxed text-zinc-400 md:text-lg">
                     Stop testing memory and start driving measurable outcomes: faster ramp, higher message consistency, and stronger conversion behavior.
                   </p>
 
-                  <div className="mx-auto mb-10 grid max-w-4xl gap-5 text-left md:grid-cols-3">
+                  <div className="mx-auto mb-11 grid max-w-4xl gap-6 text-left md:grid-cols-3">
                     <div className="metric-card">
-                      <div className="mb-2 text-3xl font-light text-zinc-100">Ramp</div>
-                      <div className="mb-2 text-[11px] font-medium uppercase tracking-[0.16em] text-zinc-500">Time to Value</div>
+                      <div className="mb-2.5 text-3xl font-light text-zinc-100">Ramp</div>
+                      <div className="mb-2.5 text-[11px] font-medium uppercase tracking-[0.16em] text-zinc-500">Time to Value</div>
                       <p className="text-sm leading-relaxed text-zinc-400">Accelerate onboarding and reach productivity sooner.</p>
                     </div>
                     <div className="metric-card">
-                      <div className="mb-2 text-3xl font-light text-zinc-100">Consistency</div>
-                      <div className="mb-2 text-[11px] font-medium uppercase tracking-[0.16em] text-zinc-500">Message Adherence</div>
+                      <div className="mb-2.5 text-3xl font-light text-zinc-100">Consistency</div>
+                      <div className="mb-2.5 text-[11px] font-medium uppercase tracking-[0.16em] text-zinc-500">Message Adherence</div>
                       <p className="text-sm leading-relaxed text-zinc-400">Reduce execution drift and dependency on hero reps.</p>
                     </div>
                     <div className="metric-card">
-                      <div className="mb-2 text-3xl font-light text-zinc-100">Conversion</div>
-                      <div className="mb-2 text-[11px] font-medium uppercase tracking-[0.16em] text-zinc-500">Revenue Driving</div>
+                      <div className="mb-2.5 text-3xl font-light text-zinc-100">Conversion</div>
+                      <div className="mb-2.5 text-[11px] font-medium uppercase tracking-[0.16em] text-zinc-500">Revenue Driving</div>
                       <p className="text-sm leading-relaxed text-zinc-400">Turn training into measurable behavior change.</p>
                     </div>
                   </div>
 
-                  <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                  <div className="mb-11 flex flex-col items-center justify-center gap-4 sm:flex-row">
                     <button className="cta-primary w-full sm:w-auto">
                       Request a Demo
                     </button>
@@ -555,8 +522,8 @@ export default function App() {
                     </button>
                   </div>
 
-                  <div className="mx-auto mt-9 max-w-4xl border-t border-white/[0.07] pt-8">
-                    <p className="mb-7 text-[11px] uppercase tracking-[0.16em] text-zinc-600">A proven partner for long-term growth</p>
+                  <div className="mx-auto max-w-4xl border-t border-white/[0.07] pt-9">
+                    <p className="mb-8 text-[11px] uppercase tracking-[0.16em] text-zinc-600">A proven partner for long-term growth</p>
                     <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-3 opacity-45 transition-opacity hover:opacity-70 md:gap-x-16">
                       <span className="text-lg font-semibold tracking-tight text-zinc-300">T-Mobile</span>
                       <span className="text-lg font-semibold tracking-tight text-zinc-300">Erste Group</span>
@@ -572,7 +539,7 @@ export default function App() {
 
         {showStepper && (
           <div
-            className={`floating-stepper fixed bottom-5 left-1/2 z-[9999] flex -translate-x-1/2 items-center gap-2 rounded-full border border-white/[0.14] bg-[#0f0f12]/86 p-1.5 shadow-2xl backdrop-blur-md md:bottom-6 md:left-auto md:right-6 md:translate-x-0 ${
+            className={`floating-stepper fixed bottom-5 left-1/2 z-[9999] flex -translate-x-1/2 items-center gap-2 rounded-full border border-white/[0.14] bg-[#0f0f12]/86 p-1.5 shadow-2xl backdrop-blur-md ${
               stepperPulse ? "animate-pulse" : ""
             }`}
           >
