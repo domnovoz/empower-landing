@@ -360,8 +360,8 @@ export default function App() {
                         <div className="flex h-8 items-center justify-between rounded-md border border-[#162239] bg-[#060d1a] px-3">
                           <div className="text-[9px] text-[#7285a7]">Home  ›  Convert  ›  Intelligence  ›  <span className="text-zinc-200">Analytics</span></div>
                           <div className="flex items-center gap-1.5">
-                            <span className="rounded border border-[#2b3a58] px-1.5 py-0.5 text-[8px] text-zinc-300">Live Cohort</span>
-                            <span className="rounded bg-[#5a72ff] px-1.5 py-0.5 text-[8px] text-white">Realtime</span>
+                            <span className="rounded border border-[#2b3a58] px-1.5 py-0.5 text-[8px] text-zinc-300">AI Assistant</span>
+                            <span className="rounded bg-[#5a72ff] px-1.5 py-0.5 text-[8px] text-white">Studio</span>
                           </div>
                         </div>
 
