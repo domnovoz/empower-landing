@@ -336,29 +336,29 @@ export default function App() {
                     </div>
                   </div>
 
-                  <div className="relative aspect-square overflow-hidden rounded-2xl border border-[#1a2335] bg-[#03070f] shadow-[0_28px_64px_-40px_rgba(0,0,0,0.98)]">
+                  <div className="relative aspect-[5/6] overflow-hidden rounded-2xl border border-[#1a2335] bg-[#03070f] shadow-[0_28px_64px_-40px_rgba(0,0,0,0.98)] sm:aspect-square">
                     <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_78%_4%,rgba(66,104,176,0.24),transparent_45%)]" />
                     <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(5,10,18,0.08)_0%,rgba(2,4,10,0.74)_100%)]" />
-                    <div className="relative grid h-full grid-cols-[94px_minmax(0,1fr)]">
-                      <aside className="flex flex-col border-r border-[#111a2b] bg-[#040912] p-3.5">
-                        <div className="mb-6 flex items-center gap-2">
+                    <div className="relative grid h-full grid-cols-[74px_minmax(0,1fr)] sm:grid-cols-[94px_minmax(0,1fr)]">
+                      <aside className="flex min-h-0 flex-col border-r border-[#111a2b] bg-[#040912] p-2 sm:p-3.5">
+                        <div className="mb-4 flex items-center gap-1.5 sm:mb-6 sm:gap-2">
                           <img src={logo} alt="Promethist" className="h-4 w-auto opacity-95" />
-                          <span className="text-[10px] font-medium text-zinc-200">AI</span>
+                          <span className="text-[9px] font-medium text-zinc-200 sm:text-[10px]">AI</span>
                         </div>
-                        <div className="mb-2 text-[9px] uppercase tracking-[0.12em] text-[#53617a]">Project</div>
-                        <div className="space-y-1.5 text-[9px]">
+                        <div className="mb-2 text-[8px] uppercase tracking-[0.12em] text-[#53617a] sm:text-[9px]">Project</div>
+                        <div className="space-y-1.5 text-[8px] sm:text-[9px]">
                           <div className="text-[#5d6f8d]">Relational Agents</div>
                           <div className="text-[#5d6f8d]">Knowledge Bases</div>
                           <div className="rounded border border-[#253551] bg-[#0d1628] px-1.5 py-1 text-[#97b5ff]">Analytics Suite</div>
                           <div className="text-[#5d6f8d]">Evaluation Runs</div>
                           <div className="text-[#5d6f8d]">Settings</div>
                         </div>
-                        <div className="mt-auto border-t border-[#111a2b] pt-3 text-[8px] text-[#5c6a84]">domnik.novozamsky</div>
+                        <div className="mt-auto border-t border-[#111a2b] pt-2 text-[7px] text-[#5c6a84] sm:pt-3 sm:text-[8px]">domnik.novozamsky</div>
                       </aside>
 
-                      <div className="flex flex-col gap-2.5 p-3.5">
-                        <div className="flex h-8 items-center justify-between rounded-md border border-[#162239] bg-[#060d1a] px-3">
-                          <div className="text-[9px] text-[#7285a7]">Home  ›  Convert  ›  Intelligence  ›  <span className="text-zinc-200">Analytics</span></div>
+                      <div className="flex min-h-0 flex-col gap-2 p-2 sm:gap-2.5 sm:p-3.5">
+                        <div className="flex min-h-8 flex-wrap items-center justify-between gap-1.5 rounded-md border border-[#162239] bg-[#060d1a] px-2 py-1 sm:h-8 sm:flex-nowrap sm:px-3">
+                          <div className="truncate text-[8px] text-[#7285a7] sm:text-[9px]">Home  ›  Convert  ›  Intelligence  ›  <span className="text-zinc-200">Analytics</span></div>
                           <div className="flex items-center gap-1.5">
                             <span className="rounded border border-[#2b3a58] px-1.5 py-0.5 text-[8px] text-zinc-300">AI Assistant</span>
                             <span className="rounded bg-[#5a72ff] px-1.5 py-0.5 text-[8px] text-white">Studio</span>
@@ -372,7 +372,7 @@ export default function App() {
                           </p>
                         </div>
 
-                        <div className="grid flex-1 grid-cols-3 gap-2">
+                        <div className="grid min-h-0 flex-1 grid-cols-1 gap-2 overflow-y-auto pr-1 sm:grid-cols-2 lg:grid-cols-3">
                           <div className="flex flex-col rounded-md border border-[#22324f] bg-[#0b1425] p-2">
                             <div className="mb-1 flex items-center gap-1">
                               <span className="rounded bg-emerald-300/10 px-1.5 py-0.5 text-[7px] uppercase tracking-wide text-emerald-300">Pass/Fail</span>
